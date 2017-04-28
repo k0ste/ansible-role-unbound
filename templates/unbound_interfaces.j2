@@ -1,0 +1,18 @@
+{% if i.listen_interfaces is defined and i.listen_interfaces != '' %}
+{% for int in i.listen_interfaces %}
+{% if int.address | ipaddr('host') %}
+{% if int.port is defined and int.port != '' %}
+{{ '  ' ~ 'interface: ' ~ int.address ~ '@' ~ int.port }}
+{% else %}
+{{ '  ' + 'interface: ' + int.address }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if i.outgoing_interfaces is defined and i.outgoing_interfaces != '' %}
+{% for int in i.outgoing_interfaces %}
+{% if int | ipaddr() %}
+{{ '  ' + 'outgoing-interface: ' + int }}
+{% endif %}
+{% endfor %}
+{% endif %}

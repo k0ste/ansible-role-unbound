@@ -1,0 +1,9 @@
+---
+- name: Generate unbound.conf
+  template:
+    src: "unbound.j2"
+    dest: "{{ hostvars[inventory_hostname]['unbound_conf_dest'] + '/' + hostvars[inventory_hostname]['unbound_conf'] }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    validate: "unbound-checkconf %s"

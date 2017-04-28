@@ -1,0 +1,183 @@
+{% if s.username is defined and s.username != '' %}
+{{ '  ' + 'username: ' + s.username | string }}
+{% endif %}
+{% if s.use_systemd is defined and s.use_systemd in ['yes', 'no'] %}
+{{ '  ' + 'use-systemd: ' + s.use_systemd }}
+{% endif %}
+{% if s.do_daemonize is defined and s.do_daemonize in ['yes', 'no'] %}
+{{ '  ' + 'do-daemonize: ' + s.do_daemonize }}
+{% endif %}
+{% if s.chroot is defined and s.chroot != '' %}
+{{ '  ' + 'chroot: ' + s.chroot }}
+{% endif %}
+{% if s.directory is defined and s.directory != '' %}
+{{ '  ' + 'directory: ' + s.directory }}
+{% endif %}
+{% if s.pidfile is defined and s.pidfile != '' %}
+{{ '  ' + 'pidfile: ' + s.pidfile }}
+{% endif %}
+{% if s.root_hints is defined and s.root_hints != '' %}
+{{ '  ' + 'root-hints: ' + s.root_hints }}
+{% endif %}
+{% if s.hide_identity is defined and s.hide_identity in ['yes', 'no'] %}
+{{ '  ' + 'hide-identity: ' + s.hide_identity }}
+{% endif %}
+{% if s.hide_version is defined and s.hide_version in ['yes', 'no'] %}
+{{ '  ' + 'hide-version: ' + s.hide_version }}
+{% endif %}
+{% if s.identity is defined and s.identity != '' %}
+{{ '  ' + 'identity: ' + s.identity | string }}
+{% endif %}
+{% if s.version is defined and s.version != '' %}
+{{ '  ' + 'version: ' + s.version | string }}
+{% endif %}
+{% if s.verbosity is defined and s.verbosity in ['0', '1', '2', '3', '4', '5'] %}
+{{ '  ' ~ 'hide-version: ' ~ s.hide_version }}
+{% endif %}
+{% if s.statistics_interval is defined and s.statistics_interval != '' %}
+{{ '  ' ~ 'statistics-interval: ' ~ s.statistics_interval }}
+{% endif %}
+{% if s.statistics_cumulative is defined and s.statistics_cumulative in ['yes', 'no'] %}
+{{ '  ' + 'statistics-cumulative: ' + s.statistics_cumulative }}
+{% endif %}
+{% if s.extended_statistics is defined and s.extended_statistics in ['yes', 'no'] %}
+{{ '  ' + 'extended-statistics: ' + s.extended_statistics }}
+{% endif %}
+{% if s.num_threads is defined and s.num_threads != '' %}
+{{ '  ' ~ 'num-threads: ' ~ s.num_threads }}
+{% endif %}
+{% if s.logfile is defined and s.logfile != '' %}
+{{ '  ' + 'logfile: ' + s.logfile }}
+{% endif %}
+{% if s.use_syslog is defined and s.use_syslog in ['yes', 'no'] %}
+{{ '  ' + 'use-syslog: ' + s.use_syslog }}
+{% endif %}
+{% if s.log_identity is defined and s.log_identity != '' %}
+{{ '  ' ~ 'log-identity: ' ~ s.log_identity }}
+{% endif %}
+{% if s.log_time_ascii is defined and s.log_time_ascii in ['yes', 'no'] %}
+{{ '  ' + 'use-syslog: ' + s.log_time_ascii }}
+{% endif %}
+{% if s.log_queries is defined and s.log_queries in ['yes', 'no'] %}
+{{ '  ' + 'log-queries: ' + s.log_queries }}
+{% endif %}
+{% if s.log_replies is defined and s.log_replies in ['yes', 'no'] %}
+{{ '  ' + 'log-replies: ' + s.log_replies }}
+{% endif %}
+{% if s.interface_automatic is defined and s.interface_automatic in ['yes', 'no'] %}
+{{ '  ' + 'interface-automatic: ' + s.interface_automatic }}
+{% endif %}
+{% if s.port is defined and s.port != '' %}
+{{ '  ' ~ 'port: ' ~ s.port }}
+{% endif %}
+{% if s.prefer_ip6 is defined and s.prefer_ip6 in ['yes', 'no'] %}
+{{ '  ' + 'prefer-ip6: ' + s.prefer_ip6 }}
+{% endif %}
+{% if s.outgoing_range is defined and s.outgoing_range != '' %}
+{{ '  ' ~ 'outgoing-range: ' ~ s.outgoing_range }}
+{% endif %}
+{% if s.outgoing_port_permit is defined and s.outgoing_port_permit != '' %}
+{{ '  ' ~ 'outgoing-port-permit: ' ~ s.outgoing_port_permit }}
+{% endif %}
+{% if s.outgoing_port_avoid is defined and s.outgoing_port_avoid != '' %}
+{{ '  ' ~ 'outgoing-port-avoid: ' ~ s.outgoing_port_avoid }}
+{% endif %}
+{% if s.outgoing_num_tcp is defined and s.outgoing_num_tcp != '' %}
+{{ '  ' ~ 'outgoing-num-tcp: ' ~ s.outgoing_num_tcp }}
+{% endif %}
+{% if s.incoming_num_tcp is defined and s.incoming_num_tcp != '' %}
+{{ '  ' ~ 'incoming-num-tcp: ' ~ s.incoming_num_tcp }}
+{% endif %}
+{% if s.so_rcvbuf is defined and s.so_rcvbuf != '' %}
+{{ '  ' ~ 'so-rcvbuf: ' ~ s.so_rcvbuf }}
+{% endif %}
+{% if s.so_sndbuf is defined and s.so_sndbuf != '' %}
+{{ '  ' ~ 'so-sndbuf: ' ~ s.so_sndbuf }}
+{% endif %}
+{% if s.so_reuseport is defined and s.so_reuseport in ['yes', 'no'] %}
+{{ '  ' + 'so-reuseport: ' + s.so_reuseport }}
+{% endif %}
+{% if s.ip_transparent is defined and s.ip_transparent in ['yes', 'no'] %}
+{{ '  ' + 'ip-transparent: ' + s.ip_transparent }}
+{% endif %}
+{% if s.ip_freebind is defined and s.ip_freebind in ['yes', 'no'] %}
+{{ '  ' + 'ip-freebind: ' + s.ip_freebind }}
+{% endif %}
+{% if s.edns_buffer_size is defined and s.edns_buffer_size != '' %}
+{{ '  ' ~ 'edns-buffer-size: ' ~ s.edns_buffer_size }}
+{% endif %}
+{% if s.max_udp_size is defined and s.max_udp_size != '' %}
+{{ '  ' ~ 'max-udp-size: ' ~ s.max_udp_size }}
+{% endif %}
+{% if s.msg_buffer_size is defined and s.msg_buffer_size != '' %}
+{{ '  ' ~ 'msg-buffer-size: ' ~ s.msg_buffer_size }}
+{% endif %}
+{% if s.msg_cache_size is defined and s.msg_cache_size != '' %}
+{{ '  ' ~ 'msg-cache-size: ' ~ s.msg_cache_size }}
+{% endif %}
+{% if s.msg_cache_slabs is defined and s.msg_cache_slabs != '' %}
+{{ '  ' ~ 'msg-cache-slabs: ' ~ s.msg_cache_slabs }}
+{% endif %}
+{% if s.num_queries_per_thread is defined and s.num_queries_per_thread != '' %}
+{{ '  ' ~ 'num-queries-per-thread: ' ~ s.num_queries_per_thread }}
+{% endif %}
+{% if s.jostle_timeout is defined and s.jostle_timeout != '' %}
+{{ '  ' ~ 'jostle-timeout: ' ~ s.jostle_timeout }}
+{% endif %}
+{% if s.rrset_cache_size is defined and s.rrset_cache_size != '' %}
+{{ '  ' ~ 'rrset-cache-size: ' ~ s.rrset_cache_size }}
+{% endif %}
+{% if s.rrset_cache_slabs is defined and s.rrset_cache_slabs != '' %}
+{{ '  ' ~ 'rrset-cache-slabs: ' ~ s.rrset_cache_slabs }}
+{% endif %}
+{% if s.cache_min_ttl is defined and s.cache_min_ttl != '' %}
+{{ '  ' ~ 'cache-min-ttl: ' ~ s.cache_min_ttl }}
+{% endif %}
+{% if s.cache_max_ttl is defined and s.cache_max_ttl != '' %}
+{{ '  ' ~ 'cache-max-ttl: ' ~ s.cache_max_ttl }}
+{% endif %}
+{% if s.cache_max_negative_ttl is defined and s.cache_max_negative_ttl != '' %}
+{{ '  ' ~ 'cache-max-negative-ttl: ' ~ s.cache_max_negative_ttl }}
+{% endif %}
+{% if s.infra_host_ttl is defined and s.infra_host_ttl != '' %}
+{{ '  ' ~ 'infra-host-ttl: ' ~ s.infra_host_ttl }}
+{% endif %}
+{% if s.infra_cache_slabs is defined and s.infra_cache_slabs != '' %}
+{{ '  ' ~ 'infra-cache-slabs: ' ~ s.infra_cache_slabs }}
+{% endif %}
+{% if s.infra_cache_min_rtt is defined and s.infra_cache_min_rtt != '' %}
+{{ '  ' ~ 'infra-cache-min-rtt: ' ~ s.infra_cache_min_rtt }}
+{% endif %}
+{% if s.infra_cache_numhosts is defined and s.infra_cache_numhosts != '' %}
+{{ '  ' ~ 'infra-cache-numhosts: ' ~ s.infra_cache_numhosts }}
+{% endif %}
+{% if s.define_tag is defined and s.define_tag != '' %}
+{{- '  ' + 'define-tag: \"' + s.define_tag | join( ' ' ) + '\"' -}}
+{% endif %}
+{% if s.do_ip4 is defined and s.do_ip4 in ['yes', 'no'] %}
+{{ '  ' + 'do-ip4: ' + s.do_ip4 }}
+{% endif %}
+{% if s.do_ip6 is defined and s.do_ip6 in ['yes', 'no'] %}
+{{ '  ' + 'do-ip6: ' + s.do_ip6 }}
+{% endif %}
+{% if s.prefer_ip6 is defined and s.prefer_ip6 in ['yes', 'no'] %}
+{{ '  ' + 'prefer-ip6: ' + s.prefer_ip6 }}
+{% endif %}
+{% if s.do_udp is defined and s.do_udp in ['yes', 'no'] %}
+{{ '  ' + 'do-udp: ' + s.do_udp }}
+{% endif %}
+{% if s.do_tcp is defined and s.do_tcp in ['yes', 'no'] %}
+{{ '  ' + 'do-tcp: ' + s.do_tcp }}
+{% endif %}
+{% if s.tcp_mss is defined and s.tcp_mss != '' %}
+{{ '  ' ~ 'tcp-mss: ' ~ s.tcp_mss }}
+{% endif %}
+{% if s.outgoing_tcp_mss is defined and s.outgoing_tcp_mss != '' %}
+{{ '  ' ~ 'outgoing-tcp-mss: ' ~ s.outgoing_tcp_mss }}
+{% endif %}
+{% if s.tcp_upstream is defined and s.tcp_upstream in ['yes', 'no'] %}
+{{ '  ' + 'tcp-upstream: ' + s.tcp_upstream }}
+{% endif %}
+{% if s.unblock_lan_zones is defined and s.unblock_lan_zones in ['yes', 'no'] %}
+{{ '  ' + 'unblock-lan-zones: ' + s.unblock_lan_zones }}
+{% endif %}
