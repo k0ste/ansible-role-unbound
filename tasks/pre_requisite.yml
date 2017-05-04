@@ -1,3 +1,32 @@
 ---
 - name: Add the OS specific variables
   include_vars: "{{ hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
+- assert:
+    that:
+    - "hostvars[inventory_hostname]['unbound_root_hints_src'] | match('^(http[s]?|ftp|file):(.*)')"
+    msg: "url not found in 'unbound_root_hints_src'."
+  when:
+  - "hostvars[inventory_hostname]['unbound_download_root_hints'] in ['true', 'always']"
+- assert:
+    that:
+    - "hostvars[inventory_hostname]['unbound_restart_method'] in ['reload', 'restart']"
+    msg: "'unbound_restart_method' must be in 'reload' or 'restart'."
+  when:
+  - "hostvars[inventory_hostname]['unbound_restart_method'] is defined"
+- name: Find unbound-control certificates
+  find:
+    paths: "{{ hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
+    patterns: '(.*).pem'
+    recurse: "no"
+    file_type: "file"
+    use_regex: "True"
+  register: "find_result"
+  when:
+  - "hostvars[inventory_hostname]['unbound_control_setup'] == 'true'"
+- name: Stat root hints
+  stat:
+    path: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"
+  register: "unbound_root_hints_stat"
+  when:
+  - "hostvars[inventory_hostname]['unbound_root_hints_dest'] is defined"
+  - "hostvars[inventory_hostname]['unbound_root_hints_dest'] != ''"

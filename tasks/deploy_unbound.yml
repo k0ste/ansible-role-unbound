@@ -1,4 +1,9 @@
 ---
+- name: Unbound control setup
+  command: "{{ 'unbound-control-setup -d ' + hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
+  when:
+  - "hostvars[inventory_hostname]['unbound_control_setup'] is defined"
+  - "(hostvars[inventory_hostname]['unbound_control_setup'] == 'always' or (hostvars[inventory_hostname]['unbound_control_setup'] == 'true' and vars['find_result']['files'] | length == 0))"
 - name: Generate unbound.conf
   template:
     src: "unbound.j2"
@@ -6,4 +11,6 @@
     owner: "root"
     group: "root"
     mode: "0644"
-    validate: "unbound-checkconf %s"
+  register: "unbound_deploy_result"
+  notify:
+  - 'Validate unbound configuration'

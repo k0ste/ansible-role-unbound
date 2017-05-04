@@ -25,3 +25,13 @@
 {% include 'unbound_local_zones.j2' %}
 {% endfor %}
 {% endif %}
+
+{% if hostvars[inventory_hostname]['unbound_remote_control'] is defined %}
+{{ 'remote-control:' }}
+{{ '  ' + 'control-enable: yes' }}
+{% endif %}
+{% if hostvars[inventory_hostname]['unbound_remote_control'] is defined and hostvars[inventory_hostname]['unbound_remote_control'] != '' %}
+{% for r in hostvars[inventory_hostname]['unbound_remote_control'] %}
+{% include 'unbound_remote_control.j2' %}
+{% endfor %}
+{% endif %}

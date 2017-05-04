@@ -27,6 +27,6 @@
 {% endfor %}
 {% endif %}
 {% if l.tags is defined and l.tags != '' %}
-{{- '  ' + 'local-zone-tag: \"' + l.name + '\" \"' + l.tags | join( ' ' ) + '\"' -}}
+{{- '  ' + 'local-zone-tag: \"' + l.name + '\" \"' + l.tags | join( ' ' ) + '\"' }}
 {% endif %}
 {% endif %}

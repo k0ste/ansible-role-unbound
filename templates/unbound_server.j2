@@ -152,7 +152,7 @@
 {{ '  ' ~ 'infra-cache-numhosts: ' ~ s.infra_cache_numhosts }}
 {% endif %}
 {% if s.define_tag is defined and s.define_tag != '' %}
-{{- '  ' + 'define-tag: \"' + s.define_tag | join( ' ' ) + '\"' -}}
+{{- '  ' + 'define-tag: \"' + s.define_tag | join( ' ' ) + '\"' }}
 {% endif %}
 {% if s.do_ip4 is defined and s.do_ip4 in ['yes', 'no'] %}
 {{ '  ' + 'do-ip4: ' + s.do_ip4 }}

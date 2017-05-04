@@ -1,3 +1,4 @@
 ---
 - include: pre_requisite.yml
+- include: deploy_root_hints.yml
 - include: deploy_unbound.yml
