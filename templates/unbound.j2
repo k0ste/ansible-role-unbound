@@ -25,7 +25,6 @@
 {% include 'unbound_local_zones.j2' %}
 {% endfor %}
 {% endif %}
-
 {% if hostvars[inventory_hostname]['unbound_remote_control'] is defined %}
 {{ 'remote-control:' }}
 {{ '  ' + 'control-enable: yes' }}
@@ -33,5 +32,15 @@
 {% if hostvars[inventory_hostname]['unbound_remote_control'] is defined and hostvars[inventory_hostname]['unbound_remote_control'] != '' %}
 {% for r in hostvars[inventory_hostname]['unbound_remote_control'] %}
 {% include 'unbound_remote_control.j2' %}
+{% endfor %}
+{% endif %}
+{% if hostvars[inventory_hostname]['unbound_forward_zones'] is defined and hostvars[inventory_hostname]['unbound_forward_zones'] != '' %}
+{% for f in hostvars[inventory_hostname]['unbound_forward_zones'] %}
+{% include 'unbound_forward_zones.j2' %}
+{% endfor %}
+{% endif %}
+{% if hostvars[inventory_hostname]['unbound_stub_zones'] is defined and hostvars[inventory_hostname]['unbound_stub_zones'] != '' %}
+{% for s in hostvars[inventory_hostname]['unbound_stub_zones'] %}
+{% include 'unbound_stub_zones.j2' %}
 {% endfor %}
 {% endif %}

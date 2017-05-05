@@ -1,0 +1,28 @@
+{{ 'forward-zone:' }}
+{{ '  ' + 'name: ' + '\"' + f.name + '\"' }}
+{% if f.forward_address is defined and f.forward_address != '' %}
+{% for fa in f.forward_address %}
+{% if fa.address | ipaddr('host') %}
+{% if fa.port is defined and fa.port != '' %}
+{{ '  ' ~ 'forward-addr: ' ~ fa.address ~ '@' ~ fa.port }}
+{% else %}
+{{ '  ' + 'forward-addr: ' + fa.address }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if f.forward_host is defined and f.forward_host != '' %}
+{% for fh in f.forward_host %}
+{% if fh.port is defined and fh.port != '' %}
+{{ '  ' ~ 'forward-host: ' ~ fh.host ~ '@' ~ fh.port }}
+{% else %}
+{{ '  ' + 'forward-host: ' + fh.host }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if f.forward_first is defined and f.forward_first in ['yes', 'no'] %}
+{{ '  ' + 'forward-first: ' + f.forward_first }}
+{% endif %}
+{% if f.forward_ssl_upstream is defined and f.forward_ssl_upstream in ['yes', 'no'] %}
+{{ '  ' + 'forward-ssl-upstream: ' + f.forward_ssl_upstream }}
+{% endif %}

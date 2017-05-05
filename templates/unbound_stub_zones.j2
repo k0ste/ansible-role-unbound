@@ -1,0 +1,28 @@
+{{ 'stub-zone:' }}
+{{ '  ' + 'name: ' + '\"' + s.name + '\"' }}
+{% if s.stub_address is defined and s.stub_address != '' %}
+{% for fa in s.stub_address %}
+{% if fa.address | ipaddr('host') %}
+{% if fa.port is defined and fa.port != '' %}
+{{ '  ' ~ 'stub-addr: ' ~ fa.address ~ '@' ~ fa.port }}
+{% else %}
+{{ '  ' + 'stub-addr: ' + fa.address }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if s.stub_host is defined and s.stub_host != '' %}
+{% for sh in s.stub_host %}
+{% if sh.port is defined and sh.port != '' %}
+{{ '  ' ~ 'stub-host: ' ~ sh.host ~ '@' ~ sh.port }}
+{% else %}
+{{ '  ' + 'stub-host: ' + sh.host }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if s.stub_first is defined and s.stub_first in ['yes', 'no'] %}
+{{ '  ' + 'stub-first: ' + s.stub_first }}
+{% endif %}
+{% if s.stub_ssl_upstream is defined and s.stub_ssl_upstream in ['yes', 'no'] %}
+{{ '  ' + 'stub-ssl-upstream: ' + s.stub_ssl_upstream }}
+{% endif %}
