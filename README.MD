@@ -1,16 +1,88 @@
 ansible-unbound
 ==================
 
+Role for deploy [Unbound](//www.unbound.net/) - validating, recursive, and caching DNS resolver.
+
+Requirements for usage
+-----------------------
+
+* Ansible 2.2;
+* GNU/Linux;
+* [python-netaddr](//docs.ansible.com/ansible/playbooks_filters_ipaddr.html);
+
+Role support
+-------------
+
+* unbound server;
+* unbound local zones;
+* unbound forward zones;
+* unbound stub zones;
+* unbound views;
+* unbound control;
+* root.hints download/update;
+* unbound-control-setup;
+
+
+Extra
+-----------
+
+Behavior of handlers rule by variables:
+
+* **unbound_enable**, *default is false* - enable service or not;
+* **unbound_restart**, *default is false* - restart service after configuration
+validation or not;
+
+Other variables:
+
+**unbound_restart_method**, *default is `reload`* - what to do when
+`unbound_restart` set to `true` - `reload` or `restart`;
+
+**unbound_use_ansible_managed**, *default is false* - set `{{ ansible_managed }}`
+stamp or not;
+
+**unbound_add_deployed_timestamp**, *default is false* - put real time of deploy
+to generated configuration;
+
+**unbound_root_hints_src**, *default is
+`https://www.internic.net/domain/named.cache`* - the source of root hints. May
+be http/https/ftp/file;
+
+**unbound_root_hints_dest**, *default is `/etc/unbound/named.cache`*, destination
+to download `unbound_root_hints_src`. Should be match with `root_hints` of
+`unbound_server`;
+
+**unbound_download_root_hints**, *default is true*:
+ * `false` - do not download anythig;
+ * `true` - download only when `unbound_root_hints_dest` does not exists (do not
+update existing file);
+ * `always` - download always;
+
+**unbound_control_setup_dest**, *default is `/etc/unbound`*, destination for
+`unbound-control-setup` certificates generation. Should be match with `key
+files` of `unbound_control`;
+
+**unbound_control_setup**, *default is true*:
+ * `false` - do not run `unbound-control-setup`;
+ * `true` - run `unbound-control-setup` only when no '\*.pem' files on
+`unbound_control_setup_dest` is preset (do not update existing files);
+ * `always` - always run `unbound_control_setup_dest`;
+
 Example configuration
 -------------------------
 
 ```yaml
 ---
-unbound_service_enable: 'true'
-unbound_service_restart: 'true'
-unbound_install_package: 'false'
+unbound_enable: 'true'
+unbound_restart: 'true'
+unbound_restart_method: 'reload' # restart or reload
+unbound_install_package: 'true'
 unbound_use_ansible_managed: 'true'
 unbound_add_deployed_timestamp: 'false'
+unbound_root_hints_src: 'https://www.internic.net/domain/named.cache'
+unbound_root_hints_dest: '/etc/unbound/named.cache'
+unbound_download_root_hints: 'true' # true, false, always
+unbound_control_setup: 'true' # true, false, always
+unbound_control_setup_dest: '/etc/unbound'
 
 unbound_server:
 # If given, after binding the port the user privileges are dropped.
@@ -31,7 +103,7 @@ unbound_server:
 # for the IN class. The file has the format of zone files, with root nameserver
 # names and addresses only. The default may become outdated, when servers
 # change, therefore it is good practice to use a root-hints file.
-  root_hints: 'named.cache'
+  root_hints: '/etc/unbound/named.cache'
 # If enabled id.server and hostname.bind queries are refused.
   hide_identity: 'no'
 # If enabled version.server and version.bind queries are refused.
@@ -328,6 +400,8 @@ unbound_control:
 - access_control_view:
   - address: '192.0.2.0/24'
     view: 'view1'
+  - address: '192.0.3.0/24'
+    view: 'view2'
 
 unbound_local_zones:
 # Configure a local zone. The type determines the answer to give if there is no
@@ -362,7 +436,8 @@ unbound_local_zones:
 # different type, the query is resolved normally. So, similar to transparent but
 # types that are not listed in local data are resolved normally, so if an A
 # record is in the local data that does not cause a nodata reply for AAAA queries.
-# redirect The query is answered from the local data for the zone name. There
+#
+# redirect - The query is answered from the local data for the zone name. There
 # may be no local data beneath the zone name. This answers queries for the zone,
 # and all subdomains of the zone with the local data for the zone. It can be
 # used to redirect a domain to return a different address record to the end user,
@@ -394,7 +469,7 @@ unbound_local_zones:
 # nodefault if you use exactly that zone, if you want to use a subzone,
 # use transparent.
 
-- name: 'example.com'
+- name: 'example.net'
   action: 'redirect'
 # Configure local data, which is served in reply to queries for it. The query
 # has to match exactly unless you configure the local-zone as redirect. If not
@@ -402,19 +477,29 @@ unbound_local_zones:
 # local-data is configured that is not a subdomain of a local-zone, a
 # transparent local-zone is configured.
   data:
-  - resource: 'example.com'
+  - resource: 'example.net'
     type: 'A'
     answer: '192.168.5.1'
-  - resource: 'example.com'
-    type: 'MX'
+  - resource: 'example.net'
+    type: 'MX 10' # MX record should have weight!
     answer: '192.168.5.2'
-# Configure local data shorthand for a PTR record with the reversed IPv4 or IPv6 address and the  host  name.
+# Configure local data shorthand for a PTR record with the reversed IPv4 or IPv6
+# address and the host name.
   data_ptr:
   - resource: '192.168.5.1'
     ttl: '7200'
-    answer: 'www.example.com'
+    answer: 'www.example.net'
   - resource: '192.168.5.2'
-    answer: 'refused.example.com'
+    answer: 'refused.example.net'
+- name: 'example.org'
+  action: 'redirect'
+  data:
+  - resource: 'example.org'
+    type: 'A'
+    answer: '192.168.3.1'
+  - resource: 'example.org'
+    type: 'TXT'
+    answer: 'supa_scoopa'
 # Assign tags to localzones. Tagged localzones will only be applied when the
 # used access-control element has a matching tag. Tags are whitespace separated.
   tags:
@@ -433,6 +518,7 @@ unbound_forward_zones:
   forward_address:
   - address: '192.168.1.1'
     port: '53'
+  - address: '192.168.2.1'
 # If enabled, a query is attempted without the forward clause if it fails. The
 # data could not be retrieved and would have caused SERVFAIL because the servers
 # are unreachable, instead it is tried without this clause.
@@ -447,6 +533,56 @@ unbound_forward_zones:
   - host: 'ns2.google.com'
 - name: 'opentech.ru'
   forward_address:
+  - address: '193.150.124.1'
+
+unbound_stub_zones:
+# There may be multiple stub-zone: clauses. Each with a name: and zero or more
+# hostnames or IP addresses. For the stub zone this list of nameservers is used.
+# Class IN is assumed. The servers should be authority servers, not recursors.
+# unbound performs the recursive processing itself for stub zones.
+# The stub zone can be used to configure authoritative data to be used by the
+# resolver that cannot be accessed using the public internet servers. This is
+# useful for company-local data or private zones. Setup an authoritative server
+# on a different host (or different port). The unbound resolver can then access
+# the data, without referring to the public internet for it.
+# This setup allows DNSSEC signed zones to be served by that authoritative
+# server, in which case a trusted key entry with the public key can be put in
+# config, so that unbound can validate the data and set the AD bit on replies
+# for the private zone (authoritative servers do not set the AD bit). This setup
+# makes unbound capable of answering queries for the private zone, and can even
+# set the AD bit ('authentic'), but the AA ('authoritative') bit is not set on
+# these replies.
+# Consider adding server: statements for domain-insecure: and for local-zone:
+# name nodefault for the zone if it is a locally served zone. The insecure
+# clause stops DNSSEC from invalidating the zone. The local zone nodefault
+# (or transparent) clause makes the (reverse-) zone bypass unbound's filtering
+# of RFC1918 zones.
+
+# Name of the stub zone.
+- name: 'example.local'
+  stub_address:
+  - address: '192.168.1.1'
+    port: '53'
+  - address: '192.168.2.1'
+# If enabled it performs NS set priming, which is similar to root hints, where
+# it starts using the list of nameservers currently published by the zone. Thus,
+# if the hint list is slightly outdated, the resolver picks up a correct list
+# online.
+  stub_prime: 'no'
+# If enabled, a query is attempted without the stub clause if it fails. The data
+# could not be retrieved and would have caused SERVFAIL because the servers are
+# unreachable, instead it is tried without this clause.
+  stub_first: 'no'
+# Enabled or disable whether the queries to this stub use SSL for transport.
+  stub_ssl_upstream: 'no'
+- name: 'google.com'
+# Name of stub zone nameserver. Is itself resolved before it is used.
+  stub_host:
+  - host: 'ns1.google.com'
+    port: '53'
+  - host: 'ns2.google.com'
+- name: 'opentech.ru'
+  stub_address:
   - address: '193.150.124.1'
 
 unbound_views:
@@ -465,7 +601,7 @@ unbound_views:
       type: 'A'
       answer: '192.168.5.1'
     - resource: 'example.com'
-      type: 'MX'
+      type: 'MX 10'
       answer: '192.168.5.2'
 # View specific local-data-ptr elements. Has the same behaviour as the global
 # local-data-ptr elements.
@@ -479,6 +615,26 @@ unbound_views:
 # is no match in the view specific options.
     view_first: 'no'
   - name: 'refused.example.com'
+    action: 'refuse'
+- name: 'view2'
+  zones:
+  - name: 'example.org'
+    action: 'redirect'
+    data:
+    - resource: 'example.org'
+      type: 'A'
+      answer: '192.168.3.1'
+    - resource: 'example.org'
+      type: 'MX 20'
+      answer: '192.168.3.2'
+    data_ptr:
+    - resource: '192.168.3.1'
+      ttl: '7200'
+      answer: 'www.example.org'
+    - resource: '192.168.3.2'
+      answer: 'refused.example.org'
+    view_first: 'no'
+  - name: 'refused.example.org'
     action: 'refuse'
 
 # If this is enabled, the unbound-control(8) utility can be used to send
