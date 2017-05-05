@@ -1,5 +1,5 @@
 {{ 'forward-zone:' }}
-{{ '  ' + 'name: ' + '\"' + f.name + '\"' }}
+{{ '  ' + 'name: \"' + f.name + '\"' }}
 {% if f.forward_address is defined and f.forward_address != '' %}
 {% for fa in f.forward_address %}
 {% if fa.address | ipaddr('host') %}

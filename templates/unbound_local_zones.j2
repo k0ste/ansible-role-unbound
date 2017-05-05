@@ -1,8 +1,8 @@
 {% if (l.name is defined and l.name != '') and (l.action is defined and l.action != '') %}
 {% if l.action in ['deny', 'refuse', 'static', 'transparent', 'typetransparent',
-                   'inform', 'inform_deny', 'always_transparent',
+                   'redirect', 'inform', 'inform_deny', 'always_transparent',
                    'always_refuse', 'always_nxdomain', 'nodefault'] %}
-{{ '  ' + 'local-zone: ' + l.name + ' ' + l.action }}
+{{ '  ' + 'local-zone: \"' + l.name + '\" ' + l.action }}
 {% endif %}
 {% if l.data is defined and l.data != '' %}
 {% for lz in l.data %}
@@ -10,7 +10,7 @@
 {% if lz.type in 'TXT' %}
 {{ '  ' + 'local-data: \'' + lz.resource + ' ' + lz.type + ' \"' + lz.answer + '\"\'' }}
 {% else %}
-{{ '  ' + 'local-data: \'' + lz.resource + ' ' + lz.type + ' ' + lz.answer + '\'' }}
+{{ '  ' + 'local-data: \"' + lz.resource + ' ' + lz.type + ' ' + lz.answer + '\"' }}
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -19,14 +19,14 @@
 {% for lz in l.data_ptr %}
 {% if lz.resource is defined and lz.answer is defined %}
 {% if lz.ttl is defined and lz.ttl != '' %}
-{{ '  ' ~ 'local-data-ptr: \'' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.answer ~ '\'' }}
+{{ '  ' ~ 'local-data-ptr: \"' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.answer ~ '\"' }}
 {% else %}
-{{ '  ' + 'local-data-ptr: \'' + lz.resource + ' ' + lz.answer + '\'' }}
+{{ '  ' + 'local-data-ptr: \"' + lz.resource + ' ' + lz.answer + '\"' }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
 {% if l.tags is defined and l.tags != '' %}
-{{- '  ' + 'local-zone-tag: \"' + l.name + '\" \"' + l.tags | join( ' ' ) + '\"' }}
+{{- '  ' ~ 'local-zone-tag: \"' ~ l.name ~ '\" \"' ~ l.tags | join( ' ' ) ~ '\"' }}
 {% endif %}
 {% endif %}

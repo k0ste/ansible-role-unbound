@@ -1,5 +1,5 @@
 {{ 'stub-zone:' }}
-{{ '  ' + 'name: ' + '\"' + s.name + '\"' }}
+{{ '  ' + 'name: \"' + s.name + '\"' }}
 {% if s.stub_address is defined and s.stub_address != '' %}
 {% for fa in s.stub_address %}
 {% if fa.address | ipaddr('host') %}

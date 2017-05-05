@@ -44,3 +44,8 @@
 {% include 'unbound_stub_zones.j2' %}
 {% endfor %}
 {% endif %}
+{% if hostvars[inventory_hostname]['unbound_views'] is defined and hostvars[inventory_hostname]['unbound_views'] != '' %}
+{% for v in hostvars[inventory_hostname]['unbound_views'] %}
+{% include 'unbound_views.j2' %}
+{% endfor %}
+{% endif %}

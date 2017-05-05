@@ -1,0 +1,38 @@
+{{ 'view:' }}
+{{ '  ' ~ 'name: \"' ~ v.name + '\"' }}
+{% if v.zones is defined and v.zones != ''%}
+{% for vz in v.zones %}
+{% if (vz.name is defined and vz.name != '') and (vz.action is defined and vz.action != '') %}
+{% if vz.action in ['deny', 'refuse', 'static', 'transparent', 'typetransparent',
+                    'redirect', 'inform', 'inform_deny', 'always_transparent',
+                    'always_refuse', 'always_nxdomain', 'nodefault'] %}
+{{ '  ' + 'local-zone: \"' + vz.name + '\" ' + vz.action }}
+{% endif %}
+{% if vz.data is defined and vz.data != '' %}
+{% for lz in vz.data %}
+{% if lz.resource is defined and lz.type is defined and lz.answer is defined %}
+{% if lz.type in 'TXT' %}
+{{ '  ' + 'local-data: \'' + lz.resource + ' ' + lz.type + ' \"' + lz.answer + '\"\'' }}
+{% else %}
+{{ '  ' + 'local-data: \"' + lz.resource + ' ' + lz.type + ' ' + lz.answer + '\"' }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if vz.data_ptr is defined and vz.data_ptr != '' %}
+{% for lz in vz.data_ptr %}
+{% if lz.resource is defined and lz.answer is defined %}
+{% if lz.ttl is defined and lz.ttl != '' %}
+{{ '  ' ~ 'local-data-ptr: \"' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.answer ~ '\"' }}
+{% else %}
+{{ '  ' + 'local-data-ptr: \"' + lz.resource + ' ' + lz.answer + '\"' }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if v.view_first is defined and v.view_first in ['yes', 'no'] %}
+{{ '  ' + 'view-first: ' + v.view_first }}
+{% endif %}
