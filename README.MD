@@ -363,9 +363,40 @@ unbound_interfaces:
   - '0.0.0.0'
 
 unbound_control:
-# The action can be:
-# deny, refuse, allow, allow_snoop, deny_non_local or refuse_non_local.
-# The most specific netblock match is used, if none match deny is used.
+# The netblock is given as an IP4 or IP6 address with /size appended for a
+# classless network block. The most specific netblock match is used, if none
+# match deny is used.
+#
+# deny - stops queries from hosts from that netblock.
+#
+# refuse - stops queries too, but sends a DNS rcode REFUSED error message back.
+#
+# allow - gives access to clients from that netblock. It gives only access for
+# recursion clients (which is what almost all clients need). Nonrecursive
+# queries are refused. Action does allow nonrecursive queries to access the
+# local-data that is configured. The reason is that this does not involve the unbound server
+# recursive lookup algorithm, and static data is served in the reply. This
+# supports normal operations where nonrecursive queries are made for the
+# authoritative data. For nonrecursive queries any replies from the dynamic cache
+# are refused.
+#
+# allow_snoop gives nonrecursive access too. This give both recursive and non
+# recursive access.
+# The name allow_snoop refers to cache snooping, a technique to use nonrecursive
+# queries to examine the cache contents (for malicious acts). However,
+# nonrecursive queries can also be a valuable debugging tool (when you want to
+# examine the cache contents). In that case use allow_snoop for your
+# administration host.
+#
+# By default only localhost is allowed, the rest is refused. The default is
+# refused, because that is protocol-friendly. The DNS protocol is not designed
+# to handle dropped packets due to policy, and dropping may result in (possibly
+# excessive) retried queries. The deny_non_local and refuse_non_local settings
+# are for hosts that are only allowed to query for the authoritative local-data,
+# they are not allowed full recursion but only the static data. With
+# deny_non_local, messages that are disallowed are dropped, with refuse_non_local
+# they receive error code REFUSED.
+
 - access_control:
   - address: '192.168.0.0/16'
     action: 'allow'
@@ -382,13 +413,15 @@ unbound_control:
 # this netblock.
 - access_control_tag:
   - address: '192.0.2.0/24'
-    tag: 'tag1 tag2'
+    tags:
+    - 'tag1'
+    - 'tag2'
 # Set action for particular tag for given access control element. If you have
 # multiple tag values, the tag used to lookup the action is the first tag match
 # between access-control-tag and local-zone-tag where "first" comes from the
 # order of the define-tag values.
 - access_control_tag_action:
-  - address:
+  - address: '192.0.2.0/24'
     tag: 'tag2'
     action: 'refuse'
 # Set redirect data for particular tag for given access control element.
