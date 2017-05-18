@@ -32,7 +32,7 @@
 {{ '  ' + 'version: ' + s.version | string }}
 {% endif %}
 {% if s.verbosity is defined and s.verbosity in ['0', '1', '2', '3', '4', '5'] %}
-{{ '  ' ~ 'hide-version: ' ~ s.hide_version }}
+{{ '  ' ~ 'verbosity: ' ~ s.verbosity }}
 {% endif %}
 {% if s.statistics_interval is defined and s.statistics_interval != '' %}
 {{ '  ' ~ 'statistics-interval: ' ~ s.statistics_interval }}

@@ -159,14 +159,14 @@ unbound_server:
   log_replies: 'no'
 # Detect source interface on UDP queries and copy them to replies. This feature
 # is experimental, and needs support in your OS for particular socket options.
-  interface_automatic: 'no'
+  interface_automatic: 'yes'
 # The port number, default 53, on which the server responds to queries.
   port: '53'
 # Number of ports to open. This number of file descriptors can be opened per
 # thread. Must be at least 1. Larger numbers need extra resources from the
 # operating system. For performance a very large value is best, use libevent to
 # make this possible.
-  outgoing_range: '8192'
+  outgoing_range: '4096'
 # Permit unbound to open this port or range of ports for use to send queries.
 # A larger number of permitted outgoing ports increases resilience against
 # spoofing attempts. Make sure these ports are not needed by other daemons. By
