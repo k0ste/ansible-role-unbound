@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: "Konstantin Shalygin <k0ste@k0ste.ru>"
+  issue_tracker_url: "https://github.com/k0ste/ansible-role-unbound"
+  description: "Role for deploy Unbound - validating, recursive, and caching DNS resolver."
+  company: "YASB"
+  license: "GPL"
+  min_ansible_version: "2.2"
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  - name: Ubuntu
+    versions: all
+  - name: Archlinux
+    versions: all
+  categories:
+   - system
+   - networking
+dependencies: []
