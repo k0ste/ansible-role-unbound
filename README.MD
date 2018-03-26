@@ -1,17 +1,14 @@
-ansible-unbound
-==================
+# ansible-unbound
 
-Role for deploy [Unbound](//www.unbound.net/) - validating, recursive, and caching DNS resolver.
+Role for deploy [Unbound](//www.unbound.net/) - validating, recursive, and
+caching DNS resolver.
 
-Requirements for usage
------------------------
+## Requirements for usage
 
-* Ansible 2.2;
-* GNU/Linux;
+* Ansible 2.4;
 * [python-netaddr](//docs.ansible.com/ansible/playbooks_filters_ipaddr.html);
 
-Role support
--------------
+## Role support
 
 * unbound server;
 * unbound local zones;
@@ -22,53 +19,34 @@ Role support
 * root.hints download/update;
 * unbound-control-setup;
 
+## Extra
 
-Extra
------------
-
-Behavior of handlers rule by variables:
-
-* **unbound_enable**, *default is false* - enable service or not;
-* **unbound_restart**, *default is false* - restart service after configuration
-validation or not;
-
-Other variables:
-
-**unbound_restart_method**, *default is `reload`* - what to do when
-`unbound_restart` set to `true` - `reload` or `restart`;
-
-**unbound_use_ansible_managed**, *default is false* - set `{{ ansible_managed }}`
-stamp or not;
-
-**unbound_add_deployed_timestamp**, *default is false* - put real time of deploy
-to generated configuration;
-
-**unbound_root_hints_src**, *default is
-`https://www.internic.net/domain/named.cache`* - the source of root hints. May
-be http/https/ftp/file;
-
-**unbound_root_hints_dest**, *default is `/etc/unbound/named.cache`*, destination
-to download `unbound_root_hints_src`. Should be match with `root_hints` of
-`unbound_server`;
-
-**unbound_download_root_hints**, *default is true*:
- * `false` - do not download anythig;
- * `true` - download only when `unbound_root_hints_dest` does not exists (do not
+* `unbound_enable` - enable service or not;
+* `unbound_restart` - restart service after configuration validation or not;
+* `unbound_restart_method` - what to do when `unbound_restart` set to `true` -
+`reload` or `restart`;
+* unbound_use_ansible_managed - set `{{ ansible_managed }}` stamp or not;
+* unbound_add_deployed_timestamp - put real time of deploy to deployed
+configuration;
+* `unbound_root_hints_src` - the source of root hints. May be
+http/https/ftp/file (default is `https://www.internic.net/domain/named.cache`);
+* `unbound_root_hints_dest` - destination to download `unbound_root_hints_src`.
+Should be match with `root_hints` of `unbound_server` (default is
+`/etc/unbound/named.cache`);
+* unbound_download_root_hints:
+  * `false` - do not download anythig;
+  * `true` - download only when `unbound_root_hints_dest` does not exists (do not
 update existing file);
- * `always` - download always;
-
-**unbound_control_setup_dest**, *default is `/etc/unbound`*, destination for
-`unbound-control-setup` certificates generation. Should be match with `key
-files` of `unbound_control`;
-
-**unbound_control_setup**, *default is true*:
- * `false` - do not run `unbound-control-setup`;
- * `true` - run `unbound-control-setup` only when no '\*.pem' files on
+  * `always` - download always;
+* `unbound_control_setup_dest` - destination for `unbound-control-setup`
+certificates generation. Should be match with `key files` of `unbound_control`;
+* `unbound_control_setup`:
+  * `false` - do not run `unbound-control-setup`;
+  * `true` - run `unbound-control-setup` only when no '\*.pem' files on
 `unbound_control_setup_dest` is preset (do not update existing files);
- * `always` - always run `unbound_control_setup_dest`;
+  * `always` - always run `unbound_control_setup_dest`;
 
-Example configuration
--------------------------
+## Example configuration
 
 ```yaml
 ---

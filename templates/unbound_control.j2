@@ -2,7 +2,7 @@
 {% for aa in a.access_control %}
 {% if aa.address is defined and aa.address | ipaddr('net') %}
 {% if aa.action is defined and aa.action in ['deny', 'refuse', 'allow',
-                              'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
+   'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
 {{ '  ' + 'access-control: ' + aa.address + ' ' + aa.action }}
 {% endif %}
 {% endif %}
@@ -16,7 +16,8 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if a.access_control_tag_action is defined and a.access_control_tag_action != '' %}
+{% if a.access_control_tag_action is defined and
+      a.access_control_tag_action != '' %}
 {% for at in a.access_control_tag_action %}
 {% if (at.address is defined and at.address | ipaddr('net')) and
       (at.tag is defined and at.tag != '') %}

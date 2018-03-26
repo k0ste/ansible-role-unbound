@@ -2,10 +2,11 @@
 {{ '  ' ~ 'name: \"' ~ v.name + '\"' }}
 {% if v.zones is defined and v.zones != ''%}
 {% for vz in v.zones %}
-{% if (vz.name is defined and vz.name != '') and (vz.action is defined and vz.action != '') %}
-{% if vz.action in ['deny', 'refuse', 'static', 'transparent', 'typetransparent',
-                    'redirect', 'inform', 'inform_deny', 'always_transparent',
-                    'always_refuse', 'always_nxdomain', 'nodefault'] %}
+{% if (vz.name is defined and vz.name != '') and
+      (vz.action is defined and vz.action != '') %}
+{% if vz.action in ['deny', 'refuse', 'static', 'transparent',
+      'typetransparent', 'redirect', 'inform', 'inform_deny',
+      'always_transparent', 'always_refuse', 'always_nxdomain', 'nodefault'] %}
 {{ '  ' + 'local-zone: \"' + vz.name + '\" ' + vz.action }}
 {% endif %}
 {% if vz.data is defined and vz.data != '' %}

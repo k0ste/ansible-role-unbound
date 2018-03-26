@@ -1,5 +1,4 @@
 ---
-unbound_conf: 'unbound.conf'
 unbound_conf_dest: '/etc/unbound'
 unbound_package: 'unbound'
 unbound_service: 'unbound'

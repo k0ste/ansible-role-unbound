@@ -1,19 +1,17 @@
 ---
 - name: Validate unbound configuration
-  command: "{{ 'unbound-checkconf ' + hostvars[inventory_hostname]['unbound_conf_dest'] + '/' + hostvars[inventory_hostname]['unbound_conf'] }}"
+  command: "{{ 'unbound-checkconf ' +
+                hostvars[inventory_hostname]['unbound_conf_dest'] + '/' +
+                'unbound.conf' }}"
   register: "unbound_dry_run"
   failed_when: "unbound_dry_run.rc != 0"
-  when: "unbound_deploy_result|success"
   notify:
-    - 'Enable unbound'
-    - 'Start unbound'
-- name: Enable unbound
-  service:
-    name: "{{ hostvars[inventory_hostname]['unbound_service'] }}"
-    enabled: "yes"
-  when: "unbound_dry_run|success and hostvars[inventory_hostname]['unbound_enable'] == 'true'"
+  - "Start unbound"
 - name: Start unbound
   service:
     name: "{{ hostvars[inventory_hostname]['unbound_service'] }}"
     state: "{{ hostvars[inventory_hostname]['unbound_restart_method'] + 'ed' }}"
-  when: "unbound_dry_run|success and hostvars[inventory_hostname]['unbound_restart'] == 'true'"
+  when:
+  - "unbound_dry_run|success"
+  - "hostvars[inventory_hostname]['unbound_restart'] is defined"
+  - "hostvars[inventory_hostname]['unbound_restart'] == 'true'"

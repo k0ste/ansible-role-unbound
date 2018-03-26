@@ -1,5 +1,5 @@
 ---
-- name: Download root hints
+- name: unbound | Download root hints
   get_url:
     url: "{{ hostvars[inventory_hostname]['unbound_root_hints_src'] }}"
     dest: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"
@@ -9,7 +9,7 @@
   when:
   - "hostvars[inventory_hostname]['unbound_download_root_hints'] == 'true'"
   - "unbound_root_hints_stat.stat.exists == False"
-- name: Download root hints
+- name: unbound | Download root hints
   get_url:
     url: "{{ hostvars[inventory_hostname]['unbound_root_hints_src'] }}"
     dest: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"

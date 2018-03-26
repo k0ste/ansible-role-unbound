@@ -23,6 +23,7 @@
 {% if f.forward_first is defined and f.forward_first in ['yes', 'no'] %}
 {{ '  ' + 'forward-first: ' + f.forward_first }}
 {% endif %}
-{% if f.forward_ssl_upstream is defined and f.forward_ssl_upstream in ['yes', 'no'] %}
+{% if f.forward_ssl_upstream is defined and
+      f.forward_ssl_upstream in ['yes', 'no'] %}
 {{ '  ' + 'forward-ssl-upstream: ' + f.forward_ssl_upstream }}
 {% endif %}

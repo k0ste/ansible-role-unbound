@@ -1,18 +1,18 @@
 ---
-- name: Install the required packages in Redhat derivatives
+- name: unbound | Install the required packages in Redhat derivatives
   yum:
     name: "{{ hostvars[inventory_hostname]['unbound_package'] }}"
     state: "installed"
   when:
   - "hostvars[inventory_hostname]['ansible_os_family'] == 'RedHat'"
-- name: Install the required packages in Debian derivatives
+- name: unbound | Install the required packages in Debian derivatives
   apt:
     name: "{{ hostvars[inventory_hostname]['unbound_package'] }}"
     state: "installed"
     update_cache: "yes"
   when:
   - "hostvars[inventory_hostname]['ansible_os_family'] == 'Debian'"
-- name: Install the required packages in ArchLinux derivatives
+- name: unbound | Install the required packages in ArchLinux derivatives
   pacman:
     name: "{{ hostvars[inventory_hostname]['unbound_package'] }}"
     state: "installed"

@@ -1,4 +1,5 @@
-{% if (l.name is defined and l.name != '') and (l.action is defined and l.action != '') %}
+{% if (l.name is defined and l.name != '') and
+      (l.action is defined and l.action != '') %}
 {% if l.action in ['deny', 'refuse', 'static', 'transparent', 'typetransparent',
                    'redirect', 'inform', 'inform_deny', 'always_transparent',
                    'always_refuse', 'always_nxdomain', 'nodefault'] %}

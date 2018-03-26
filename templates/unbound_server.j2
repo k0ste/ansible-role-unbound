@@ -31,16 +31,19 @@
 {% if s.version is defined and s.version != '' %}
 {{ '  ' + 'version: ' + s.version | string }}
 {% endif %}
-{% if s.verbosity is defined and s.verbosity in ['0', '1', '2', '3', '4', '5'] %}
+{% if s.verbosity is defined and s.verbosity in
+      ['0', '1', '2', '3', '4', '5'] %}
 {{ '  ' ~ 'verbosity: ' ~ s.verbosity }}
 {% endif %}
 {% if s.statistics_interval is defined and s.statistics_interval != '' %}
 {{ '  ' ~ 'statistics-interval: ' ~ s.statistics_interval }}
 {% endif %}
-{% if s.statistics_cumulative is defined and s.statistics_cumulative in ['yes', 'no'] %}
+{% if s.statistics_cumulative is defined and s.statistics_cumulative in
+      ['yes', 'no'] %}
 {{ '  ' + 'statistics-cumulative: ' + s.statistics_cumulative }}
 {% endif %}
-{% if s.extended_statistics is defined and s.extended_statistics in ['yes', 'no'] %}
+{% if s.extended_statistics is defined and s.extended_statistics in
+      ['yes', 'no'] %}
 {{ '  ' + 'extended-statistics: ' + s.extended_statistics }}
 {% endif %}
 {% if s.num_threads is defined and s.num_threads != '' %}
@@ -64,7 +67,8 @@
 {% if s.log_replies is defined and s.log_replies in ['yes', 'no'] %}
 {{ '  ' + 'log-replies: ' + s.log_replies }}
 {% endif %}
-{% if s.interface_automatic is defined and s.interface_automatic in ['yes', 'no'] %}
+{% if s.interface_automatic is defined and s.interface_automatic in
+      ['yes', 'no'] %}
 {{ '  ' + 'interface-automatic: ' + s.interface_automatic }}
 {% endif %}
 {% if s.port is defined and s.port != '' %}
