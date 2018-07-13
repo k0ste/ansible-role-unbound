@@ -1,7 +1,7 @@
 ---
 - name: unbound | Unbound control setup
   command: "{{ 'unbound-control-setup -d ' +
-                hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
+    hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
   when:
   - "hostvars[inventory_hostname]['unbound_control_setup'] is defined"
   - "(hostvars[inventory_hostname]['unbound_control_setup'] == 'always' or
@@ -11,7 +11,7 @@
   template:
     src: "unbound.j2"
     dest: "{{ hostvars[inventory_hostname]['unbound_conf_dest'] + '/' +
-              'unbound.conf' }}"
+      'unbound.conf' }}"
     owner: "root"
     group: "root"
     mode: "0644"

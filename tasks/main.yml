@@ -1,8 +1,8 @@
 ---
-- include_tasks: pre_requisite.yml
+- import_tasks: pre_requisite.yml
 - include_tasks: packages.yml
   when:
   - "hostvars[inventory_hostname]['unbound_install_package'] is defined"
   - "hostvars[inventory_hostname]['unbound_install_package'] == 'true'"
-- include_tasks: deploy_root_hints.yml
-- include_tasks: deploy_unbound.yml
+- import_tasks: deploy_root_hints.yml
+- import_tasks: deploy_unbound.yml

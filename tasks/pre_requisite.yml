@@ -1,16 +1,18 @@
 ---
 - name: unbound | Add the OS specific variables
-  include_vars: "{{ hostvars[inventory_hostname]['ansible_os_family'] +
-                    '.yml' }}"
-- assert:
+  include_vars: "{{
+    hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
+- name: unbound | Assert that root hints variable is url
+  assert:
     that:
-    - "hostvars[inventory_hostname]['unbound_root_hints_src'] |
+    - "hostvars[inventory_hostname]['unbound_root_hints_src'] is
        match('^(http[s]?|ftp|file):(.*)')"
     msg: "url not found in 'unbound_root_hints_src'."
   when:
   - "hostvars[inventory_hostname]['unbound_download_root_hints'] in
      ['true', 'always']"
-- assert:
+- name: unbound | Assert that restart method variable have proper value
+  assert:
     that:
     - "hostvars[inventory_hostname]['unbound_restart_method'] in
        ['reload', 'restart']"

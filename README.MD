@@ -5,8 +5,7 @@ caching DNS resolver.
 
 ## Requirements for usage
 
-* Ansible 2.4;
-* [python-netaddr](//docs.ansible.com/ansible/playbooks_filters_ipaddr.html);
+* Ansible 2.5+;
 
 ## Role support
 

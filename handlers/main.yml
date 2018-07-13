@@ -1,8 +1,7 @@
 ---
 - name: Validate unbound configuration
   command: "{{ 'unbound-checkconf ' +
-                hostvars[inventory_hostname]['unbound_conf_dest'] + '/' +
-                'unbound.conf' }}"
+    hostvars[inventory_hostname]['unbound_conf_dest'] + '/' + 'unbound.conf' }}"
   register: "unbound_dry_run"
   failed_when: "unbound_dry_run.rc != 0"
   notify:
@@ -12,6 +11,6 @@
     name: "{{ hostvars[inventory_hostname]['unbound_service'] }}"
     state: "{{ hostvars[inventory_hostname]['unbound_restart_method'] + 'ed' }}"
   when:
-  - "unbound_dry_run|success"
+  - "unbound_dry_run is success"
   - "hostvars[inventory_hostname]['unbound_restart'] is defined"
   - "hostvars[inventory_hostname]['unbound_restart'] == 'true'"
