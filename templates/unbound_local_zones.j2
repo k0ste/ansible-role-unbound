@@ -9,9 +9,17 @@
 {% for lz in l.data %}
 {% if lz.resource is defined and lz.type is defined and lz.answer is defined %}
 {% if lz.type in 'TXT' %}
-{{ '  ' + 'local-data: \'' + lz.resource + ' ' + lz.type + ' \"' + lz.answer + '\"\'' }}
+{% if lz.ttl is defined and lz.ttl != '' %}
+{{ '  ' ~ 'local-data: \'' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.type ~ ' \"' ~ lz.answer ~ '\"\'' }}
 {% else %}
-{{ '  ' + 'local-data: \"' + lz.resource + ' ' + lz.type + ' ' + lz.answer + '\"' }}
+{{ '  ' ~ 'local-data: \'' ~ lz.resource ~ ' ' ~ lz.type ~ ' \"' ~ lz.answer ~ '\"\'' }}
+{% endif %}
+{% else %}
+{% if lz.ttl is defined and lz.ttl != '' %}
+{{ '  ' ~ 'local-data: \"' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.type ~ ' ' ~ lz.answer ~ '\"' }}
+{% else %}
+{{ '  ' ~ 'local-data: \"' ~ lz.resource ~ ' ' ~ lz.type ~ ' ' ~ lz.answer ~ '\"' }}
+{% endif %}
 {% endif %}
 {% endif %}
 {% endfor %}

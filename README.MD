@@ -501,6 +501,17 @@ unbound_local_zones:
     answer: 'www.example.net'
   - resource: '192.168.5.2'
     answer: 'refused.example.net'
+- name: 'test'
+  action: 'nodefault'
+  data:
+  - resource: 'test'
+    type: 'IN'
+    ttl: '10800'
+    answer: 'NS localhost.'
+  - resource: 'test'
+    type: 'IN'
+    ttl: '10800'
+    answer: 'SOA localhost. nobody.invalid. 1 3600 1200 604800 10800'
 - name: 'example.org'
   action: 'redirect'
   data:
@@ -541,9 +552,9 @@ unbound_forward_zones:
   - host: 'ns1.google.com'
     port: '53'
   - host: 'ns2.google.com'
-- name: 'opentech.ru'
+- name: 'test'
   forward_address:
-  - address: '193.150.124.1'
+  - address: '192.168.3.1'
 
 unbound_stub_zones:
 # There may be multiple stub-zone: clauses. Each with a name: and zero or more
