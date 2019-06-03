@@ -8,6 +8,7 @@
     - "hostvars[inventory_hostname]['unbound_root_hints_src'] is
        match('^(http[s]?|ftp|file):(.*)')"
     msg: "url not found in 'unbound_root_hints_src'."
+    quiet: "true"
   when:
   - "hostvars[inventory_hostname]['unbound_download_root_hints'] in
      ['true', 'always']"
@@ -17,6 +18,7 @@
     - "hostvars[inventory_hostname]['unbound_restart_method'] in
        ['reload', 'restart']"
     msg: "'unbound_restart_method' must be in 'reload' or 'restart'."
+    quiet: "true"
   when:
   - "hostvars[inventory_hostname]['unbound_restart_method'] is defined"
 - name: unbound | Find unbound-control certificates
