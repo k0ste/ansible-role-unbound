@@ -1,8 +1,8 @@
 {% if a.access_control is defined and a.access_control != '' %}
 {% for aa in a.access_control %}
-{% if aa.address is defined and aa.address | ipaddr('net') %}
+{% if aa.address is defined and aa.address | ansible.netcommon.ipaddr('net') %}
 {% if aa.action is defined and aa.action in ['deny', 'refuse', 'allow',
-   'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
+  'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
 {{ '  ' + 'access-control: ' + aa.address + ' ' + aa.action }}
 {% endif %}
 {% endif %}
@@ -10,28 +10,30 @@
 {% endif %}
 {% if a.access_control_tag is defined and a.access_control_tag != '' %}
 {% for ac in a.access_control_tag %}
-{% if (ac.address is defined and ac.address | ipaddr('net')) and
-      (ac.tags is defined and ac.tags != '') %}
-{{ '  ' ~ 'access-control-tag: ' ~ ac.address ~ ' \"' ~ ac.tags | join( ' ' ) ~ '\"' }}
+{% if (ac.address is defined and ac.address |
+  ansible.netcommon.ipaddr('net')) and (ac.tags is defined and ac.tags != '') %}
+{{ '  ' ~ 'access-control-tag: ' ~ ac.address ~ ' \"' ~ ac.tags |
+  join( ' ' ) ~ '\"' }}
 {% endif %}
 {% endfor %}
 {% endif %}
 {% if a.access_control_tag_action is defined and
       a.access_control_tag_action != '' %}
 {% for at in a.access_control_tag_action %}
-{% if (at.address is defined and at.address | ipaddr('net')) and
+{% if (at.address is defined and at.address | ansible.netcommon.ipaddr('net')) and
       (at.tag is defined and at.tag != '') %}
 {% if at.action is defined and at.action in ['deny', 'refuse', 'allow',
                               'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
-{{ '  ' ~ 'access-control-tag-action: ' ~ at.address ~ ' ' ~ at.tag ~ ' ' ~ at.action }}
+{{ '  ' ~ 'access-control-tag-action: ' ~ at.address ~ ' ' ~ at.tag ~ ' ' ~
+  at.action }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
 {% if a.access_control_view is defined and a.access_control_view != '' %}
 {% for av in a.access_control_view %}
-{% if (av.address is defined and av.address | ipaddr('net')) and
-      (av.view is defined and av.view != '') %}
+{% if (av.address is defined and av.address |
+  ansible.netcommon.ipaddr('net')) and (av.view is defined and av.view != '') %}
 {{ '  ' ~ 'access-control-view: ' ~ av.address ~ ' ' ~ av.view }}
 {% endif %}
 {% endfor %}

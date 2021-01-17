@@ -5,7 +5,7 @@ caching DNS resolver.
 
 ## Requirements for usage
 
-* Ansible 2.5+;
+* Ansible 2.10+;
 
 ## Role support
 

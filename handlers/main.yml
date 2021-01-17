@@ -1,13 +1,13 @@
 ---
 - name: Validate unbound configuration
-  command: "{{ 'unbound-checkconf ' +
+  ansible.builtin.command: "{{ 'unbound-checkconf ' +
     hostvars[inventory_hostname]['unbound_conf_dest'] + '/' + 'unbound.conf' }}"
   register: "unbound_dry_run"
   failed_when: "unbound_dry_run.rc != 0"
   notify:
   - "Start unbound"
 - name: Start unbound
-  service:
+  ansible.builtin.systemd:
     name: "{{ hostvars[inventory_hostname]['unbound_service'] }}"
     state: "{{ hostvars[inventory_hostname]['unbound_restart_method'] + 'ed' }}"
   when:

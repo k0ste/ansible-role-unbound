@@ -2,7 +2,7 @@
 {{ '  ' + 'name: \"' + s.name + '\"' }}
 {% if s.stub_address is defined and s.stub_address != '' %}
 {% for fa in s.stub_address %}
-{% if fa.address | ipaddr('host') %}
+{% if fa.address | ansible.netcommon.ipaddr('host') %}
 {% if fa.port is defined and fa.port != '' %}
 {{ '  ' ~ 'stub-addr: ' ~ fa.address ~ '@' ~ fa.port }}
 {% else %}

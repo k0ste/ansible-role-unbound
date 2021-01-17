@@ -2,7 +2,7 @@
 {{ '  ' + 'name: \"' + f.name + '\"' }}
 {% if f.forward_address is defined and f.forward_address != '' %}
 {% for fa in f.forward_address %}
-{% if fa.address | ipaddr('host') %}
+{% if fa.address | ansible.netcommon.ipaddr('host') %}
 {% if fa.port is defined and fa.port != '' %}
 {{ '  ' ~ 'forward-addr: ' ~ fa.address ~ '@' ~ fa.port }}
 {% else %}

@@ -3,7 +3,7 @@
   include_vars: "{{
     hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
 - name: unbound | Assert that root hints variable is url
-  assert:
+  ansible.builtin.assert:
     that:
     - "hostvars[inventory_hostname]['unbound_root_hints_src'] is
        match('^(http[s]?|ftp|file):(.*)')"
@@ -13,7 +13,7 @@
   - "hostvars[inventory_hostname]['unbound_download_root_hints'] in
      ['true', 'always']"
 - name: unbound | Assert that restart method variable have proper value
-  assert:
+  ansible.builtin.assert:
     that:
     - "hostvars[inventory_hostname]['unbound_restart_method'] in
        ['reload', 'restart']"
@@ -22,7 +22,7 @@
   when:
   - "hostvars[inventory_hostname]['unbound_restart_method'] is defined"
 - name: unbound | Find unbound-control certificates
-  find:
+  ansible.builtin.find:
     paths: "{{ hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
     patterns: '(.*).pem'
     recurse: "no"
@@ -32,7 +32,7 @@
   when:
   - "hostvars[inventory_hostname]['unbound_control_setup'] == 'true'"
 - name: unbound | Stat root hints
-  stat:
+  ansible.builtin.stat:
     path: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"
   register: "unbound_root_hints_stat"
   when:
