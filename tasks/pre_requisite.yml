@@ -5,22 +5,22 @@
 - name: unbound | Assert that root hints variable is url
   ansible.builtin.assert:
     that:
-    - "hostvars[inventory_hostname]['unbound_root_hints_src'] is
-       match('^(http[s]?|ftp|file):(.*)')"
+      - "hostvars[inventory_hostname]['unbound_root_hints_src'] is
+         match('^(http[s]?|ftp|file):(.*)')"
     msg: "url not found in 'unbound_root_hints_src'."
     quiet: "true"
   when:
-  - "hostvars[inventory_hostname]['unbound_download_root_hints'] in
-     ['true', 'always']"
+    - "hostvars[inventory_hostname]['unbound_download_root_hints'] in
+       ['true', 'always']"
 - name: unbound | Assert that restart method variable have proper value
   ansible.builtin.assert:
     that:
-    - "hostvars[inventory_hostname]['unbound_restart_method'] in
-       ['reload', 'restart']"
+      - "hostvars[inventory_hostname]['unbound_restart_method'] in
+         ['reload', 'restart']"
     msg: "'unbound_restart_method' must be in 'reload' or 'restart'."
     quiet: "true"
   when:
-  - "hostvars[inventory_hostname]['unbound_restart_method'] is defined"
+    - "hostvars[inventory_hostname]['unbound_restart_method'] is defined"
 - name: unbound | Find unbound-control certificates
   ansible.builtin.find:
     paths: "{{ hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
@@ -30,11 +30,11 @@
     use_regex: "True"
   register: "find_result"
   when:
-  - "hostvars[inventory_hostname]['unbound_control_setup'] == 'true'"
+    - "hostvars[inventory_hostname]['unbound_control_setup'] == 'true'"
 - name: unbound | Stat root hints
   ansible.builtin.stat:
     path: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"
   register: "unbound_root_hints_stat"
   when:
-  - "hostvars[inventory_hostname]['unbound_root_hints_dest'] is defined"
-  - "hostvars[inventory_hostname]['unbound_root_hints_dest'] != ''"
+    - "hostvars[inventory_hostname]['unbound_root_hints_dest'] is defined"
+    - "hostvars[inventory_hostname]['unbound_root_hints_dest'] != ''"

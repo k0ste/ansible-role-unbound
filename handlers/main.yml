@@ -11,6 +11,6 @@
     name: "{{ hostvars[inventory_hostname]['unbound_service'] }}"
     state: "{{ hostvars[inventory_hostname]['unbound_restart_method'] + 'ed' }}"
   when:
-  - "unbound_dry_run is success"
-  - "hostvars[inventory_hostname]['unbound_restart'] is defined"
-  - "hostvars[inventory_hostname]['unbound_restart'] == 'true'"
+    - "unbound_dry_run is success"
+    - "hostvars[inventory_hostname]['unbound_restart'] is defined"
+    - "hostvars[inventory_hostname]['unbound_restart'] == 'true'"

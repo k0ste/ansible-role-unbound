@@ -1,6 +1,6 @@
 {% if i.listen_interfaces is defined and i.listen_interfaces != '' %}
 {% for int in i.listen_interfaces %}
-{% if int.address | ansible.netcommon.ipaddr('host') %}
+{% if int.address | ansible.utils.ipaddr('host') %}
 {% if int.port is defined and int.port != '' %}
 {{ '  ' ~ 'interface: ' ~ int.address ~ '@' ~ int.port }}
 {% else %}
@@ -11,7 +11,7 @@
 {% endif %}
 {% if i.outgoing_interfaces is defined and i.outgoing_interfaces != '' %}
 {% for int in i.outgoing_interfaces %}
-{% if int | ansible.netcommon.ipaddr() %}
+{% if int | ansible.utils.ipaddr() %}
 {{ '  ' + 'outgoing-interface: ' + int }}
 {% endif %}
 {% endfor %}

@@ -3,24 +3,24 @@
   ansible.builtin.command: "{{ 'unbound-control-setup -d ' +
     hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
   when:
-  - "hostvars[inventory_hostname]['unbound_control_setup'] is defined"
-  - "(hostvars[inventory_hostname]['unbound_control_setup'] == 'always' or
-     (hostvars[inventory_hostname]['unbound_control_setup'] == 'true' and
-      vars['find_result']['files'] | length == 0))"
+    - "hostvars[inventory_hostname]['unbound_control_setup'] is defined"
+    - "(hostvars[inventory_hostname]['unbound_control_setup'] == 'always' or
+       (hostvars[inventory_hostname]['unbound_control_setup'] == 'true' and
+        vars['find_result']['files'] | length == 0))"
 - name: unbound | Deploy unbound.conf
   ansible.builtin.template:
     src: "unbound.j2"
-    dest: "{{ hostvars[inventory_hostname]['unbound_conf_dest'] + '/' +
-      'unbound.conf' }}"
+    dest: "{{ hostvars[inventory_hostname]['unbound_conf_dest'] +
+      '/unbound.conf' }}"
     owner: "root"
     group: "root"
     mode: "0644"
   notify:
-  - "Validate unbound configuration"
+    - "Validate unbound configuration"
 - name: unbound | Enable unbound
   ansible.builtin.systemd:
     name: "{{ hostvars[inventory_hostname]['unbound_service'] }}"
     enabled: "yes"
   when:
-  - "hostvars[inventory_hostname]['unbound_enable'] is defined"
-  - "hostvars[inventory_hostname]['unbound_enable'] == 'true'"
+    - "hostvars[inventory_hostname]['unbound_enable'] is defined"
+    - "hostvars[inventory_hostname]['unbound_enable'] == 'true'"

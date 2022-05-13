@@ -7,8 +7,8 @@
     owner: "root"
     group: "root"
   when:
-  - "hostvars[inventory_hostname]['unbound_download_root_hints'] == 'true'"
-  - "unbound_root_hints_stat.stat.exists == False"
+    - "hostvars[inventory_hostname]['unbound_download_root_hints'] == 'true'"
+    - "unbound_root_hints_stat.stat.exists == False"
 - name: unbound | Download root hints
   ansible.builtin.get_url:
     url: "{{ hostvars[inventory_hostname]['unbound_root_hints_src'] }}"
@@ -18,4 +18,4 @@
     group: "root"
     force: "yes"
   when:
-  - "hostvars[inventory_hostname]['unbound_download_root_hints'] == 'always'"
+    - "hostvars[inventory_hostname]['unbound_download_root_hints'] == 'always'"

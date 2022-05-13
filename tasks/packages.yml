@@ -1,33 +1,33 @@
 ---
-- name: keepalived | Install the required packages in Redhat derivatives
+- name: unbound | Install the required packages in Redhat derivatives
   block:
-  - name: keepalived | Install the required packages for RedHat via yum
+  - name: unbound | Install the required packages for RedHat via yum
     ansible.builtin.yum:
       name: "{{ hostvars[inventory_hostname]['unbound_package'] }}"
       state: "present"
       update_cache: "yes"
     when:
-    - "hostvars[inventory_hostname]['ansible_pkg_mgr'] == 'yum'"
-  - name: keepalived | Install the required packages for RedHat via dnf
+      - "hostvars[inventory_hostname]['ansible_pkg_mgr'] == 'yum'"
+  - name: unbound | Install the required packages for RedHat via dnf
     ansible.builtin.dnf:
       name: "{{ hostvars[inventory_hostname]['unbound_package'] }}"
       state: "present"
       update_cache: "yes"
     when:
-    - "hostvars[inventory_hostname]['ansible_pkg_mgr'] == 'dnf'"
+      - "hostvars[inventory_hostname]['ansible_pkg_mgr'] == 'dnf'"
   when:
-  - "hostvars[inventory_hostname]['ansible_os_family'] == 'RedHat'"
-- name: keepalived | Install the required packages in Debian derivatives
+    - "hostvars[inventory_hostname]['ansible_os_family'] == 'RedHat'"
+- name: unbound | Install the required packages in Debian derivatives
   ansible.builtin.apt:
     name: "{{ hostvars[inventory_hostname]['unbound_package'] }}"
     state: "present"
     update_cache: "yes"
   when:
-  - "hostvars[inventory_hostname]['ansible_os_family'] == 'Debian'"
-- name: keepalived | Install the required packages in ArchLinux derivatives
+    - "hostvars[inventory_hostname]['ansible_os_family'] == 'Debian'"
+- name: unbound | Install the required packages in ArchLinux derivatives
   community.general.pacman:
     name: "{{ hostvars[inventory_hostname]['unbound_package'] }}"
     state: "present"
     update_cache: "yes"
   when:
-  - "hostvars[inventory_hostname]['ansible_os_family'] == 'Archlinux'"
+    - "hostvars[inventory_hostname]['ansible_os_family'] == 'Archlinux'"
