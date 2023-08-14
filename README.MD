@@ -18,27 +18,6 @@ caching DNS resolver
 * root.hints download/update;
 * unbound-control-setup;
 
-## Extra
-
-
-* `unbound_root_hints_src` - the source of root hints. May be
-http/https/ftp/file (default is `https://www.internic.net/domain/named.cache`);
-* `unbound_root_hints_dest` - destination to download `unbound_root_hints_src`.
-Should be match with `root_hints` of `unbound_server` (default is
-`/etc/unbound/named.cache`);
-* unbound_download_root_hints:
-  * `false` - do not download anythig;
-  * `true` - download only when `unbound_root_hints_dest` does not exists (do not
-update existing file);
-  * `always` - download always;
-* `unbound_control_setup_dest` - destination for `unbound-control-setup`
-certificates generation. Should be match with `key files` of `unbound_control`;
-* `unbound_control_setup`:
-  * `false` - do not run `unbound-control-setup`;
-  * `true` - run `unbound-control-setup` only when no '\*.pem' files on
-`unbound_control_setup_dest` is preset (do not update existing files);
-  * `always` - always run `unbound_control_setup_dest`;
-
 ## Example configuration
 
 ```yaml
