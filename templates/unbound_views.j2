@@ -1,32 +1,37 @@
 {{ 'view:' }}
-{{ '  ' ~ 'name: \"' ~ v.name + '\"' }}
-{% if v.zones is defined and v.zones != ''%}
-{% for vz in v.zones %}
-{% if (vz.name is defined and vz.name != '') and
-      (vz.action is defined and vz.action != '') %}
-{% if vz.action in ['deny', 'refuse', 'static', 'transparent',
-      'typetransparent', 'redirect', 'inform', 'inform_deny',
-      'always_transparent', 'always_refuse', 'always_nxdomain', 'nodefault'] %}
-{{ '  ' + 'local-zone: \"' + vz.name + '\" ' + vz.action }}
+{{ '  name: \"' ~ uv['name'] + '\"' }}
+{% if uv['zones'] is defined and uv['zones'] != ''%}
+{% for uvz in uv['zones'] %}
+{% if (uvz['name'] is defined and uvz['name'] != '') and (uvz['action'] is
+  defined and uvz['action'] != '') %}
+{% if uvz['action'] in ['deny', 'refuse', 'static', 'transparent',
+  'typetransparent', 'redirect', 'inform', 'inform_deny',
+  'always_transparent', 'always_refuse', 'always_nxdomain', 'nodefault'] %}
+{{ '  local-zone: \"' + uvz['name'] + '\" ' + uvz['action'] }}
 {% endif %}
-{% if vz.data is defined and vz.data != '' %}
-{% for lz in vz.data %}
-{% if lz.resource is defined and lz.type is defined and lz.answer is defined %}
-{% if lz.type in 'TXT' %}
-{{ '  ' + 'local-data: \'' + lz.resource + ' ' + lz.type + ' \"' + lz.answer + '\"\'' }}
+{% if uvz['data'] is defined and uvz['data'] != '' %}
+{% for uvlz in uvz['data'] %}
+{% if uvzl['resource'] is defined and uvzl['type'] is defined and
+  uvzl['answer'] is defined %}
+{% if uvzl['type'] in 'TXT' %}
+{{ '  local-data: \'' + uvzl['resource'] + ' ' + uvzl['type'] + ' \"' +
+  uvzl['answer'] + '\"\'' }}
 {% else %}
-{{ '  ' + 'local-data: \"' + lz.resource + ' ' + lz.type + ' ' + lz.answer + '\"' }}
+{{ '  local-data: \"' + uvzl['resource'] + ' ' + uvzl['type'] + ' ' +
+  uvzl['answer'] + '\"' }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if vz.data_ptr is defined and vz.data_ptr != '' %}
-{% for lz in vz.data_ptr %}
-{% if lz.resource is defined and lz.answer is defined %}
-{% if lz.ttl is defined and lz.ttl != '' %}
-{{ '  ' ~ 'local-data-ptr: \"' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.answer ~ '\"' }}
+{% if uvz['data_ptr'] is defined and uvz['data_ptr'] != '' %}
+{% for uvzl in uvz['data_ptr'] %}
+{% if uvzl['resource'] is defined and uvzl['answer'] is defined %}
+{% if uvzl['ttl'] is defined and uvzl['ttl'] != '' %}
+{{ '  local-data-ptr: \"' ~ uvzl['resource'] ~ ' ' ~ uvzl['ttl'] ~ ' ' ~
+  uvzl['answer'] ~ '\"' }}
 {% else %}
-{{ '  ' + 'local-data-ptr: \"' + lz.resource + ' ' + lz.answer + '\"' }}
+{{ '  local-data-ptr: \"' + uvzl['resource'] + ' ' + uvzl['answer'] +
+  '\"' }}
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -34,6 +39,6 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if v.view_first is defined and v.view_first in ['yes', 'no'] %}
-{{ '  ' + 'view-first: ' + v.view_first }}
+{% if uv['view_first'] is defined and uv['view_first'] in ['yes', 'no'] %}
+{{ '  view-first: ' + uv['view_first'] }}
 {% endif %}

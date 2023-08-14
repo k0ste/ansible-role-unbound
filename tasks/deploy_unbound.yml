@@ -1,26 +1,40 @@
 ---
-- name: unbound | Unbound control setup
-  ansible.builtin.command: "{{ 'unbound-control-setup -d ' +
-    hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
+- name: "unbound | Unbound control setup"
+  ansible.builtin.command:
+    cmd: "{{ 'unbound-control-setup -d ' + \
+      vars['unbound_control_setup_dest'] }}"
+  register: "unbound_control_setup_result"
+  changed_when: "unbound_control_setup_result['rc'] == 0"
   when:
-    - "hostvars[inventory_hostname]['unbound_control_setup'] is defined"
-    - "(hostvars[inventory_hostname]['unbound_control_setup'] == 'always' or
-       (hostvars[inventory_hostname]['unbound_control_setup'] == 'true' and
-        vars['find_result']['files'] | length == 0))"
-- name: unbound | Deploy unbound.conf
+    - "vars['unbound_control_setup'] is defined"
+    - "(vars['unbound_control_setup'] == 'always' or
+      (vars['unbound_control_setup'] == 'true' and
+       vars['find_result']['files'] | length == 0))"
+- name: "unbound | Deploy unbound configuration"
   ansible.builtin.template:
     src: "unbound.j2"
     dest: "{{ hostvars[inventory_hostname]['unbound_conf_dest'] +
       '/unbound.conf' }}"
-    owner: "root"
     group: "root"
+    owner: "root"
     mode: "0644"
+    force: "yes"
+    validate: "unbound-checkconf %s"
+  when:
+    - "vars['unbound_settings'] is defined"
+    - "vars['unbound_settings'] != []"
   notify:
-    - "Validate unbound configuration"
-- name: unbound | Enable unbound
+    - "Reload unbound daemon"
+- name: "unbound | Enable unbound"
   ansible.builtin.systemd:
     name: "{{ hostvars[inventory_hostname]['unbound_service'] }}"
     enabled: "yes"
   when:
-    - "hostvars[inventory_hostname]['unbound_enable'] is defined"
-    - "hostvars[inventory_hostname]['unbound_enable'] == 'true'"
+    - "hostvars[inventory_hostname]['unbound'] is defined"
+    - "hostvars[inventory_hostname]['unbound'] != ''"
+    - "hostvars[inventory_hostname]['unbound'] |
+       community.general.json_query(vars['unbound_enable']) is defined"
+    - "hostvars[inventory_hostname]['unbound'] |
+       community.general.json_query(vars['unbound_enable']) == 'true'"
+  vars:
+    unbound_enable: "[] | map(&enable || 'false', @) | [0]"

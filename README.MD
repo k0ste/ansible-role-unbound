@@ -1,11 +1,11 @@
 # ansible-unbound
 
 Role for deploy [Unbound](//www.unbound.net/) - validating, recursive, and
-caching DNS resolver.
+caching DNS resolver
 
 ## Requirements for usage
 
-* Ansible 2.10+;
+* Ansible 3.0+;
 
 ## Role support
 
@@ -20,13 +20,7 @@ caching DNS resolver.
 
 ## Extra
 
-* `unbound_enable` - enable service or not;
-* `unbound_restart` - restart service after configuration validation or not;
-* `unbound_restart_method` - what to do when `unbound_restart` set to `true` -
-`reload` or `restart`;
-* unbound_use_ansible_managed - set `{{ ansible_managed }}` stamp or not;
-* unbound_add_deployed_timestamp - put real time of deploy to deployed
-configuration;
+
 * `unbound_root_hints_src` - the source of root hints. May be
 http/https/ftp/file (default is `https://www.internic.net/domain/named.cache`);
 * `unbound_root_hints_dest` - destination to download `unbound_root_hints_src`.
@@ -49,19 +43,40 @@ certificates generation. Should be match with `key files` of `unbound_control`;
 
 ```yaml
 ---
-unbound_enable: 'true'
-unbound_restart: 'true'
-unbound_restart_method: 'reload' # restart or reload
-unbound_install_package: 'true'
-unbound_use_ansible_managed: 'true'
-unbound_add_deployed_timestamp: 'false'
-unbound_root_hints_src: 'https://www.internic.net/domain/named.cache'
-unbound_root_hints_dest: '/etc/unbound/named.cache'
-unbound_download_root_hints: 'true' # true, false, always
-unbound_control_setup: 'true' # true, false, always
-unbound_control_setup_dest: '/etc/unbound'
-
-unbound_server:
+unbound:
+# Enable unbound after deploy or not
+- enable: 'true'
+# Restart unbound after deploy or not
+  restart: 'true'
+# Restart method for unbound service - 'reload' or 'restart'
+  restart_method: 'reload'
+# Install/upgrade unbound package or not
+  install_package: 'false'
+# 'present' (do nothing if package is already installed) or 'latest' (always
+# upgrade to last version)
+  package_state: 'latest'
+# the source of root hints. May be http/https/ftp/file (default is
+# https://www.internic.net/domain/named.cache)
+  root_hints_src: ''
+# destination to download 'root_hints_src'. Should be match with 'root_hints'
+# of 'server' (default is /etc/unbound/named.cache)
+  root_hints_dst: '/etc/unbound/named.cache'
+# Root hints update policy
+# * false - do not download anythig
+# * true - download only when root_hints_dst does not exists (do not
+# update existing file)
+# * always - download always
+  download_root_hints: 'false'
+# control_setup_dst - destination for unbound-control-setup certificates
+# generation. Should be match with 'key files' of 'control'
+# * false - do not run `unbound-control-setup
+# * true - run unbound-control-setup only when no '\*.pem' files on
+# 'control_setup_dst' is preset (do not update existing files)
+# * 'always' - always run unbound-control-setup
+  control_setup: 'true'
+  control_setup_dst: '/etc/unbound'
+  settings:
+    - server:
 # If given, after binding the port the user privileges are dropped.
 - username: 'unbound'
 # Enable or disable systemd socket activation.
@@ -319,8 +334,7 @@ unbound_server:
 # compliance), this also stops potential data leakage about the local network
 # to the upstream DNS servers.
   unblock_lan_zones: 'no'
-
-unbound_interfaces:
+    - interfaces:
 # Interface to use to connect to the network. This interface is listened to for
 # queries from clients, and answers to clients are given from it. Can be given
 # multiple times to work on several interfaces. If none are given the default is
@@ -338,8 +352,7 @@ unbound_interfaces:
 # Outgoing queries are sent via a random outgoing interface to counter spoofing.
 - outgoing_interfaces:
   - '0.0.0.0'
-
-unbound_control:
+    control:
 # The netblock is given as an IP4 or IP6 address with /size appended for a
 # classless network block. The most specific netblock match is used, if none
 # match deny is used.
@@ -412,8 +425,7 @@ unbound_control:
     view: 'view1'
   - address: '192.0.3.0/24'
     view: 'view2'
-
-unbound_local_zones:
+     local_zones:
 # Configure a local zone. The type determines the answer to give if there is no
 # match from local-data.
 # After that the default settings are listed. Use local-data: to enter data into
@@ -526,8 +538,7 @@ unbound_local_zones:
   tags:
   - 'tag1'
   - 'tag2'
-
-unbound_forward_zones:
+     forward_zones:
 # For the forward zone this list of nameservers is used to forward the queries
 # to. The servers listed as forward-host and forward-addr have to handle further
 # recursion for the query. Thus, those servers are not authority servers, but
@@ -555,8 +566,7 @@ unbound_forward_zones:
 - name: 'test'
   forward_address:
   - address: '192.168.3.1'
-
-unbound_stub_zones:
+     stub_zones:
 # There may be multiple stub-zone: clauses. Each with a name: and zero or more
 # hostnames or IP addresses. For the stub zone this list of nameservers is used.
 # Class IN is assumed. The servers should be authority servers, not recursors.
@@ -605,12 +615,11 @@ unbound_stub_zones:
 - name: 'opentech.ru'
   stub_address:
   - address: '193.150.124.1'
-
-unbound_views:
+    views:
 # Name of the view. Must be unique. This name is used in access-control-view
 # elements.
-- name: 'view1'
-  zones:
+  - name: 'view1'
+    zones:
 # View specific local-zone elements. Has the same types and behaviour as the
 # global local-zone elements.
   - name: 'example.com'
@@ -663,40 +672,40 @@ unbound_views:
 # SSLv3 / TLSv1 security for the connection. The unbound-control(8) utility also
 # reads the remote-control section for options. To setup the correct self-signed
 # certificates use the unbound-control-setup(8) utility.
-unbound_remote_control:
+    remote_control:
 # The option is used to enable remote control. If turned off, the server does
 # not listen for control commands.
-- enabled: 'yes'
+      - enabled: 'yes'
 # Give IPv4 or IPv6 addresses or local socket path to listen on for control
 # commands. By default localhost (127.0.0.1 and ::1) is listened to.
 # Use 0.0.0.0 and ::0 to listen to all interfaces. If you change this and
 # permissions have been dropped, you must restart the server for the change to
 # take effect.
-  control_interfaces:
-  - '127.0.0.1'
+        control_interfaces:
+          - '127.0.0.1'
 # The port number to listen on for IPv4 or IPv6 control interfaces, default is
 # 8953. If you change this and permissions have been dropped, you must restart
 # the server for the change to take effect.
-  control_port: '8953'
+        control_port: '8953'
 # Whether to require certificate authentication of control connections. This
 # should not be changed unless there are other mechanisms in place to prevent
 # untrusted users from accessing the remote control interface.
-  control_use_cert: 'yes'
+        control_use_cert: 'yes'
 # Path to the server private key, by default unbound_server.key. This file is
 # generated by the unbound-control-setup utility. This file is used by the
 # unbound server, but not by unbound-control.
-  server_key_file: '/etc/unbound/unbound_server.key'
+        server_key_file: '/etc/unbound/unbound_server.key'
 # Path to the server self signed certificate, by default unbound_server.pem.
 # This file is generated by the unbound-control-setup utility. This file is used
 # by the unbound server, and also by unbound-control.
-  server_cert_file: '/etc/unbound/unbound_server.pem'
+        server_cert_file: '/etc/unbound/unbound_server.pem'
 # Path to the control client private key, by default unbound_control.key. This
 # file is generated by the unbound-control-setup utility. This file is used by
 # unbound-control.
-  control_key_file: '/etc/unbound/unbound_control.key'
+        control_key_file: '/etc/unbound/unbound_control.key'
 # Path to the control client certificate, by default unbound_control.pem. This
 # certificate has to be signed with the server certificate. This file is
 # generated by the unbound-control-setup utility. This file is used by
 # unbound-control.
-  control_cert_file: '/etc/unbound/unbound_control.pem'
+        control_cert_file: '/etc/unbound/unbound_control.pem'
 ```

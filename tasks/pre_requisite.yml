@@ -1,40 +1,97 @@
 ---
-- name: unbound | Add the OS specific variables
-  include_vars: "{{
-    hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
-- name: unbound | Assert that root hints variable is url
+- name: "unbound | Add the OS specific varibles"
+  ansible.builtin.include_vars:
+    file: "{{ hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
+
+- name: "unbound | Set facts about unbound role"
+  ansible.builtin.set_fact:
+    unbound_restart_method: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].restart_method | [0]') }}"
+    unbound_package_state: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].package_state | [0]') }}"
+    unbound_root_hints_src: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].root_hints_src | [0]') }}"
+    unbound_root_hints_dst: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].root_hints_dst | [0]') }}"
+    unbound_download_root_hints: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].download_root_hints | [0]') }}"
+    unbound_control_setup: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].control_setup | [0]') }}"
+    unbound_control_setup_dst: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].control_setup_dst | [0]') }}"
+    unbound_settings: "{{ hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query('[].settings[]') }}"
+- name: "unbound | Assert that unbound package state in valid value"
   ansible.builtin.assert:
     that:
-      - "hostvars[inventory_hostname]['unbound_root_hints_src'] is
-         match('^(http[s]?|ftp|file):(.*)')"
-    msg: "url not found in 'unbound_root_hints_src'."
+      - "vars['unbound_package_state'] in ['present', 'latest']"
+    msg: "'package_state' must be in 'present' or 'latest'"
     quiet: "true"
   when:
-    - "hostvars[inventory_hostname]['unbound_download_root_hints'] in
-       ['true', 'always']"
-- name: unbound | Assert that restart method variable have proper value
+    - "vars['unbound_package_state'] is defined"
+    - "vars['unbound_package_state'] != ''"
+- name: "unbound | Assert that restart method variable have proper value"
   ansible.builtin.assert:
     that:
-      - "hostvars[inventory_hostname]['unbound_restart_method'] in
-         ['reload', 'restart']"
-    msg: "'unbound_restart_method' must be in 'reload' or 'restart'."
+      - "vars['unbound_restart_method'] in ['reload', 'restart']"
+    msg: "Unbound restart method must be in 'reload' or 'restart'"
     quiet: "true"
   when:
-    - "hostvars[inventory_hostname]['unbound_restart_method'] is defined"
-- name: unbound | Find unbound-control certificates
+    - "vars['unbound_restart_method'] is defined"
+- name: "unbound | Set service restart method when restart method is defined"
+  ansible.builtin.set_fact:
+    unbound_restart_cmd: "{{ vars['unbound_restart_method'] + 'ed' }}"
+  when:
+    - "vars['unbound_restart_method'] is defined"
+- name: "unbound | Set service restart method to SIGHUP when restart method is
+    not defined"
+  ansible.builtin.set_fact:
+    unbound_restart_cmd: "reloaded"
+  when:
+    - "vars['unbound_restart_method'] is not defined"
+- name: "unbound | Assert that root hints state in valid value"
+  ansible.builtin.assert:
+    that:
+      - "vars['unbound_download_root_hints'] in [true, false, 'always']"
+    msg: "'download_root_hints' must be in 'true', 'false' or 'always'"
+    quiet: "true"
+  when:
+    - "vars['unbound_download_root_hints'] is defined"
+    - "vars['unbound_download_root_hints'] != ''"
+- name: "unbound | Set service root hints state when state is not defined"
+  ansible.builtin.set_fact:
+    unbound_download_root_hints: "true"
+  when:
+    - "vars['unbound_download_root_hints'] is not defined"
+- name: "unbound | Set root hints url when src is not defined"
+  ansible.builtin.set_fact:
+    unbound_root_hints_src: "https://www.internic.net/domain/named.cache"
+  when:
+    - "vars['unbound_root_hints_src'] is defined"
+    - "vars['unbound_root_hints_src'] == ''"
+- name: "unbound | Assert that root hints value is url"
+  ansible.builtin.assert:
+    that:
+      - "vars['unbound_root_hints_src'] is ansible.builtin.url()"
+    msg: "url not found in 'root_hints_src'."
+    quiet: "true"
+  when:
+    - "vars['unbound_download_root_hints'] in [true, 'always']"
+- name: "unbound | Find unbound-control certificates"
   ansible.builtin.find:
-    paths: "{{ hostvars[inventory_hostname]['unbound_control_setup_dest'] }}"
-    patterns: '(.*).pem'
+    paths: "{{ vars['unbound_control_setup_dst'] }}"
+    patterns: "(.*).pem"
     recurse: "no"
     file_type: "file"
-    use_regex: "True"
-  register: "find_result"
+    use_regex: "true"
+  register: "unbound_control_find_result"
   when:
-    - "hostvars[inventory_hostname]['unbound_control_setup'] == 'true'"
-- name: unbound | Stat root hints
+    - "vars['unbound_control_setup'] is defined"
+    - "vars['unbound_control_setup'] == 'true'"
+- name: "unbound | Stat root hints"
   ansible.builtin.stat:
-    path: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"
+    path: "{{ vars['unbound_root_hints_dest'] }}"
   register: "unbound_root_hints_stat"
   when:
-    - "hostvars[inventory_hostname]['unbound_root_hints_dest'] is defined"
-    - "hostvars[inventory_hostname]['unbound_root_hints_dest'] != ''"
+    - "vars['unbound_root_hints_dest'] is defined"
+    - "vars['unbound_root_hints_dest'] != ''"

@@ -1,18 +1,19 @@
-{% if i.listen_interfaces is defined and i.listen_interfaces != '' %}
-{% for int in i.listen_interfaces %}
-{% if int.address | ansible.utils.ipaddr('host') %}
-{% if int.port is defined and int.port != '' %}
-{{ '  ' ~ 'interface: ' ~ int.address ~ '@' ~ int.port }}
+{% if ui['listen_interfaces'] is defined and ui['listen_interfaces'] != '' %}
+{% for uii in ui['listen_interfaces'] %}
+{% if uii['address'] | ansible.utils.ipaddr('host') %}
+{% if uii['port'] is defined and uii['port'] != '' %}
+{{ '  interface: ' + uii['address'] + '@' ~ uii['port'] }}
 {% else %}
-{{ '  ' + 'interface: ' + int.address }}
+{{ '  interface: ' + uii['address'] }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if i.outgoing_interfaces is defined and i.outgoing_interfaces != '' %}
-{% for int in i.outgoing_interfaces %}
-{% if int | ansible.utils.ipaddr() %}
-{{ '  ' + 'outgoing-interface: ' + int }}
+{% if ui['outgoing_interfaces'] is defined and
+  ui['outgoing_interfaces'] != '' %}
+{% for uii in ui['outgoing_interfaces'] %}
+{% if uii | ansible.utils.ipaddr() %}
+{{ '  outgoing-interface: ' + uii }}
 {% endif %}
 {% endfor %}
 {% endif %}

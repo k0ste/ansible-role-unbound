@@ -1,21 +1,25 @@
 ---
-- name: unbound | Download root hints
+- name: "unbound | Download root hints"
   ansible.builtin.get_url:
-    url: "{{ hostvars[inventory_hostname]['unbound_root_hints_src'] }}"
-    dest: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"
+    url: "{{ vars['unbound_root_hints_src'] }}"
+    dest: "{{ vars['unbound_root_hints_dst'] }}"
     mode: "0644"
     owner: "root"
     group: "root"
+  notify:
+    - "Reload unbound daemon"
   when:
-    - "hostvars[inventory_hostname]['unbound_download_root_hints'] == 'true'"
-    - "unbound_root_hints_stat.stat.exists == False"
-- name: unbound | Download root hints
+    - "vars['unbound_download_root_hints'] == 'true'"
+    - "not vars['unbound_root_hints_stat']['stat']['exists']"
+- name: "unbound | Download root hints [always]"
   ansible.builtin.get_url:
-    url: "{{ hostvars[inventory_hostname]['unbound_root_hints_src'] }}"
-    dest: "{{ hostvars[inventory_hostname]['unbound_root_hints_dest'] }}"
+    url: "{{ vars['unbound_root_hints_src'] }}"
+    dest: "{{ vars['unbound_root_hints_dst'] }}"
     mode: "0644"
     owner: "root"
     group: "root"
     force: "yes"
+  notify:
+    - "Reload unbound daemon"
   when:
-    - "hostvars[inventory_hostname]['unbound_download_root_hints'] == 'always'"
+    - "vars['unbound_download_root_hints'] == 'always'"

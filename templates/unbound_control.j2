@@ -1,40 +1,42 @@
-{% if a.access_control is defined and a.access_control != '' %}
-{% for aa in a.access_control %}
-{% if aa.address is defined and aa.address | ansible.utils.ipaddr('net') %}
-{% if aa.action is defined and aa.action in ['deny', 'refuse', 'allow',
+{% if ua['access_control'] is defined and ua['access_control'] != '' %}
+{% for uaa in ua['access_control'] %}
+{% if uaa['address'] is defined and uaa['address'] |
+  ansible.utils.ipaddr('net') %}
+{% if uaa['action'] is defined and uaa['action'] in ['deny', 'refuse', 'allow',
   'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
-{{ '  ' + 'access-control: ' + aa.address + ' ' + aa.action }}
+{{ '  access-control: ' + uaa['address'] + ' ' + uaa['action'] }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if a.access_control_tag is defined and a.access_control_tag != '' %}
-{% for ac in a.access_control_tag %}
-{% if (ac.address is defined and ac.address |
-  ansible.utils.ipaddr('net')) and (ac.tags is defined and ac.tags != '') %}
-{{ '  ' ~ 'access-control-tag: ' ~ ac.address ~ ' \"' ~ ac.tags |
+{% if ua['access_control_tag'] is defined and ua['access_control_tag'] != '' %}
+{% for uaa in ua['access_control_tag'] %}
+{% if (uaa.address is defined and uaa.address |
+  ansible.utils.ipaddr('net')) and (uaa.tags is defined and uaa.tags != '') %}
+{{ '  access-control-tag: ' + uaa['address'] ~ ' \"' ~ uaa['tags'] |
   join( ' ' ) ~ '\"' }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if a.access_control_tag_action is defined and
-      a.access_control_tag_action != '' %}
-{% for at in a.access_control_tag_action %}
-{% if (at.address is defined and at.address | ansible.utils.ipaddr('net')) and
-      (at.tag is defined and at.tag != '') %}
-{% if at.action is defined and at.action in ['deny', 'refuse', 'allow',
-                              'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
-{{ '  ' ~ 'access-control-tag-action: ' ~ at.address ~ ' ' ~ at.tag ~ ' ' ~
-  at.action }}
+{% if ua['access_control_tag_action'] is defined and
+  ua['access_control_tag_action'] != '' %}
+{% for uat in ua['access_control_tag_action'] %}
+{% if (uat.address is defined and uat.address | ansible.utils.ipaddr('net')) and
+  (uat.tag is defined and uat.tag != '') %}
+{% if uat.action is defined and uat.action in ['deny', 'refuse', 'allow',
+  'allow_snoop', 'deny_non_local', 'refuse_non_local'] %}
+{{ '  access-control-tag-action: ' + uat.address ~ ' ' ~ uat.tag ~ ' ' ~
+  uat.action }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if a.access_control_view is defined and a.access_control_view != '' %}
-{% for av in a.access_control_view %}
-{% if (av.address is defined and av.address |
-  ansible.utils.ipaddr('net')) and (av.view is defined and av.view != '') %}
-{{ '  ' ~ 'access-control-view: ' ~ av.address ~ ' ' ~ av.view }}
+{% if ua['access_control_view'] is defined and
+  ua['access_control_view'] != '' %}
+{% for uav in ua['access_control_view'] %}
+{% if (uav.address is defined and uav.address |
+  ansible.utils.ipaddr('net')) and (uav.view is defined and uav.view != '') %}
+{{ '  access-control-view: ' + uav.address ~ ' ' ~ uav.view }}
 {% endif %}
 {% endfor %}
 {% endif %}

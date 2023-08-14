@@ -1,41 +1,48 @@
-{% if (l.name is defined and l.name != '') and
-      (l.action is defined and l.action != '') %}
-{% if l.action in ['deny', 'refuse', 'static', 'transparent', 'typetransparent',
-                   'redirect', 'inform', 'inform_deny', 'always_transparent',
-                   'always_refuse', 'always_nxdomain', 'nodefault'] %}
-{{ '  ' + 'local-zone: \"' + l.name + '\" ' + l.action }}
+{% if (ul['name'] is defined and ul['name'] != '') and
+  (ul['action'] is defined and ul['action'] != '') %}
+{% if ul['action'] in ['deny', 'refuse', 'static', 'transparent',
+  'typetransparent', 'redirect', 'inform', 'inform_deny', 'always_transparent',
+  'always_refuse', 'always_nxdomain', 'nodefault'] %}
+{{ '  local-zone: \"' + ul['name'] + '\" ' + ul['action'] }}
 {% endif %}
-{% if l.data is defined and l.data != '' %}
-{% for lz in l.data %}
-{% if lz.resource is defined and lz.type is defined and lz.answer is defined %}
-{% if lz.type in 'TXT' %}
-{% if lz.ttl is defined and lz.ttl != '' %}
-{{ '  ' ~ 'local-data: \'' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.type ~ ' \"' ~ lz.answer ~ '\"\'' }}
+{% if ul['data'] is defined and ul['data'] != '' %}
+{% for ulz in ul['data'] %}
+{% if ulz['resource'] is defined and ulz['type'] is defined and
+  ulz['answer'] is defined %}
+{% if ulz['type'] in 'TXT' %}
+{% if ulz['ttl'] is defined and ulz['ttl'] != '' %}
+{{ '  local-data: \'' ~ ulz['resource'] ~ ' ' ~ ulz['ttl'] ~ ' ' ~
+  ulz['type'] ~ ' \"' ~ ulz['answer'] ~ '\"\'' }}
 {% else %}
-{{ '  ' ~ 'local-data: \'' ~ lz.resource ~ ' ' ~ lz.type ~ ' \"' ~ lz.answer ~ '\"\'' }}
+{{ '  local-data: \'' ~ ulz['resource'] ~ ' ' ~ ulz['type'] ~ ' \"' ~
+  ulz['answer'] ~ '\"\'' }}
 {% endif %}
 {% else %}
-{% if lz.ttl is defined and lz.ttl != '' %}
-{{ '  ' ~ 'local-data: \"' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.type ~ ' ' ~ lz.answer ~ '\"' }}
+{% if ulz['ttl'] is defined and ulz['ttl'] != '' %}
+{{ '  local-data: \"' ~ ulz['resource'] ~ ' ' ~ ulz['ttl'] ~ ' ' ~
+  ulz['type'] ~ ' ' ~ ulz['answer'] ~ '\"' }}
 {% else %}
-{{ '  ' ~ 'local-data: \"' ~ lz.resource ~ ' ' ~ lz.type ~ ' ' ~ lz.answer ~ '\"' }}
+{{ '  local-data: \"' ~ ulz['resource'] ~ ' ' ~ ulz['type'] ~ ' ' ~
+  ulz['answer'] ~ '\"' }}
 {% endif %}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if l.data_ptr is defined and l.data_ptr != '' %}
-{% for lz in l.data_ptr %}
-{% if lz.resource is defined and lz.answer is defined %}
-{% if lz.ttl is defined and lz.ttl != '' %}
-{{ '  ' ~ 'local-data-ptr: \"' ~ lz.resource ~ ' ' ~ lz.ttl ~ ' ' ~ lz.answer ~ '\"' }}
+{% if ul['data_ptr'] is defined and ul['data_ptr'] != '' %}
+{% for ulz in ul['data_ptr'] %}
+{% if ulz['resource'] is defined and ulz['answer'] is defined %}
+{% if ulz['ttl'] is defined and ulz['ttl'] != '' %}
+{{ '  local-data-ptr: \"' ~ ulz['resource'] ~ ' ' ~ ulz['ttl'] ~ ' ' ~
+  ulz['answer'] ~ '\"' }}
 {% else %}
-{{ '  ' + 'local-data-ptr: \"' + lz.resource + ' ' + lz.answer + '\"' }}
+{{ '  local-data-ptr: \"' + ulz['resource'] + ' ' + ulz['answer'] + '\"' }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if l.tags is defined and l.tags != '' %}
-{{- '  ' ~ 'local-zone-tag: \"' ~ l.name ~ '\" \"' ~ l.tags | join( ' ' ) ~ '\"' }}
+{% if ul['tags'] is defined and ul['tags'] != '' %}
+{{- '  local-zone-tag: \"' ~ ul['name'] ~ '\" \"' ~ ul['tags'] |
+  join( ' ' ) ~ '\"' }}
 {% endif %}
 {% endif %}

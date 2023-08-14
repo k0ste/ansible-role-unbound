@@ -1,68 +1,53 @@
 {{ '## unbound.conf' }}
-{% if hostvars[inventory_hostname]['unbound_use_ansible_managed'] is defined and
-      hostvars[inventory_hostname]['unbound_use_ansible_managed'] == 'true' %}
 {{ '# ' + ansible_managed }}
-{% endif %}
-{% if
-  hostvars[inventory_hostname]['unbound_add_deployed_timestamp'] is defined and
-  hostvars[inventory_hostname]['unbound_add_deployed_timestamp'] == 'true' %}
-{{ '# Deployed at ' + ansible_date_time.date + ' ' + ansible_date_time.time }}
-{% endif %}
-{{ '# ' + 'Do not edit manually' }}
+{{ '# Do not edit manually' }}
 
-{% if hostvars[inventory_hostname]['unbound_server'] is defined or
-      hostvars[inventory_hostname]['unbound_interfaces'] is defined %}
+{% for u in vars['unbound_settings'] %}
+{% if u['server'] is defined or u['interfaces'] is defined %}
 {{ 'server:' }}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_server'] is defined and
-      hostvars[inventory_hostname]['unbound_server'] != '' %}
-{% for s in hostvars[inventory_hostname]['unbound_server'] %}
+{% if u['server'] is defined and u['server'] != '' %}
+{% for us in u['server'] %}
 {% include 'unbound_server.j2' %}
 {% endfor %}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_interfaces'] is defined and
-      hostvars[inventory_hostname]['unbound_interfaces'] != '' %}
-{% for i in hostvars[inventory_hostname]['unbound_interfaces'] %}
+{% if u['interfaces'] is defined and u['interfaces'] != '' %}
+{% for ui in u['interfaces'] %}
 {% include 'unbound_interfaces.j2' %}
 {% endfor %}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_local_zones'] is defined and
-      hostvars[inventory_hostname]['unbound_local_zones'] != '' %}
-{% for l in hostvars[inventory_hostname]['unbound_local_zones'] %}
+{% if u['local_zones'] is defined and u['local_zones'] != '' %}
+{% for ul in u['local_zones'] %}
 {% include 'unbound_local_zones.j2' %}
 {% endfor %}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_control'] is defined and
-      hostvars[inventory_hostname]['unbound_control'] != '' %}
-{% for a in hostvars[inventory_hostname]['unbound_control'] %}
+{% if u['control'] is defined and u['control'] != '' %}
+{% for ua in u['control'] %}
 {% include 'unbound_control.j2' %}
 {% endfor %}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_remote_control'] is defined %}
+{% if u['remote_control'] is defined %}
 {{ 'remote-control:' }}
-{{ '  ' + 'control-enable: yes' }}
+{{ '  control-enable: yes' }}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_remote_control'] is defined and
-      hostvars[inventory_hostname]['unbound_remote_control'] != '' %}
-{% for r in hostvars[inventory_hostname]['unbound_remote_control'] %}
+{% if u['remote_control'] is defined and u['remote_control'] != '' %}
+{% for ur in u['remote_control'] %}
 {% include 'unbound_remote_control.j2' %}
 {% endfor %}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_forward_zones'] is defined and
-      hostvars[inventory_hostname]['unbound_forward_zones'] != '' %}
-{% for f in hostvars[inventory_hostname]['unbound_forward_zones'] %}
+{% if u['forward_zones'] is defined and u['forward_zones'] != '' %}
+{% for uf in u['forward_zones'] %}
 {% include 'unbound_forward_zones.j2' %}
 {% endfor %}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_stub_zones'] is defined and
-      hostvars[inventory_hostname]['unbound_stub_zones'] != '' %}
-{% for s in hostvars[inventory_hostname]['unbound_stub_zones'] %}
+{% if u['stub_zones'] is defined and u['stub_zones'] != '' %}
+{% for us in u['stub_zones'] %}
 {% include 'unbound_stub_zones.j2' %}
 {% endfor %}
 {% endif %}
-{% if hostvars[inventory_hostname]['unbound_views'] is defined and
-      hostvars[inventory_hostname]['unbound_views'] != '' %}
-{% for v in hostvars[inventory_hostname]['unbound_views'] %}
+{% if u['views'] is defined and u['views'] != '' %}
+{% for uv in u['views'] %}
 {% include 'unbound_views.j2' %}
 {% endfor %}
 {% endif %}
+{% endfor %}

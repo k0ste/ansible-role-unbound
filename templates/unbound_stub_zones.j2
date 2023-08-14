@@ -1,28 +1,29 @@
 {{ 'stub-zone:' }}
-{{ '  ' + 'name: \"' + s.name + '\"' }}
-{% if s.stub_address is defined and s.stub_address != '' %}
-{% for fa in s.stub_address %}
-{% if fa.address | ansible.utils.ipaddr('host') %}
-{% if fa.port is defined and fa.port != '' %}
-{{ '  ' ~ 'stub-addr: ' ~ fa.address ~ '@' ~ fa.port }}
+{{ '  name: \"' + us['name'] + '\"' }}
+{% if us['stub_address'] is defined and us['stub_address'] != '' %}
+{% for uss in us['stub_address'] %}
+{% if uss['address'] | ansible.utilus['ipaddr']('host') %}
+{% if uss['port'] is defined and uss['port'] != '' %}
+{{ '  stub-addr: ' + uss['address'] + '@' ~ uss['port'] }}
 {% else %}
-{{ '  ' + 'stub-addr: ' + fa.address }}
+{{ '  stub-addr: ' + uss['address'] }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if s.stub_host is defined and s.stub_host != '' %}
-{% for sh in s.stub_host %}
-{% if sh.port is defined and sh.port != '' %}
-{{ '  ' ~ 'stub-host: ' ~ sh.host ~ '@' ~ sh.port }}
+{% if us['stub_host'] is defined and us['stub_host'] != '' %}
+{% for ush in us['stub_host'] %}
+{% if ush['port'] is defined and ush['port'] != '' %}
+{{ '  stub-host: ' + ush['host'] + '@' ~ ush['port'] }}
 {% else %}
-{{ '  ' + 'stub-host: ' + sh.host }}
+{{ '  stub-host: ' + ush['host'] }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if s.stub_first is defined and s.stub_first in ['yes', 'no'] %}
-{{ '  ' + 'stub-first: ' + s.stub_first }}
+{% if us['stub_first'] is defined and us['stub_first'] in ['yes', 'no'] %}
+{{ '  stub-first: ' + us['stub_first'] }}
 {% endif %}
-{% if s.stub_ssl_upstream is defined and s.stub_ssl_upstream in ['yes', 'no'] %}
-{{ '  ' + 'stub-ssl-upstream: ' + s.stub_ssl_upstream }}
+{% if us['stub_ssl_upstream'] is defined and us['stub_ssl_upstream'] in ['yes',
+  'no'] %}
+{{ '  stub-ssl-upstream: ' + us['stub_ssl_upstream'] }}
 {% endif %}

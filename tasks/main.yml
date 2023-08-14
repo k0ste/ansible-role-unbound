@@ -1,12 +1,22 @@
 ---
-- ansible.builtin.import_tasks:
+- name: "unbound | Include pre requisite tasks"
+  ansible.builtin.import_tasks:
     file: "pre_requisite.yml"
-- ansible.builtin.include_tasks:
+- name: "unbound | Include packages tasks"
+  ansible.builtin.include_tasks:
     file: "packages.yml"
   when:
-    - "hostvars[inventory_hostname]['unbound_install_package'] is defined"
-    - "hostvars[inventory_hostname]['unbound_install_package'] == 'true'"
-- ansible.builtin.import_tasks:
+    - "hostvars[inventory_hostname]['unbound'] is defined"
+    - "hostvars[inventory_hostname]['unbound'] != ''"
+    - "hostvars[inventory_hostname]['unbound'] |
+       community.general.json_query(vars['unbound_install_package']) is defined"
+    - "hostvars[inventory_hostname]['unbound'] |
+       community.general.json_query(vars['unbound_install_package']) == 'true'"
+  vars:
+    unbound_install_package: "[] | map(&install_package || 'false', @) | [0]"
+- name: "unbound | Include root hints tasks"
+  ansible.builtin.import_tasks:
     file: "deploy_root_hints.yml"
-- ansible.builtin.import_tasks:
+- name: "unbound | Include deployment tasks"
+  ansible.builtin.import_tasks:
     file: "deploy_unbound.yml"

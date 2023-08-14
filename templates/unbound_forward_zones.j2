@@ -1,29 +1,29 @@
 {{ 'forward-zone:' }}
-{{ '  ' + 'name: \"' + f.name + '\"' }}
-{% if f.forward_address is defined and f.forward_address != '' %}
-{% for fa in f.forward_address %}
-{% if fa.address | ansible.utils.ipaddr('host') %}
-{% if fa.port is defined and fa.port != '' %}
-{{ '  ' ~ 'forward-addr: ' ~ fa.address ~ '@' ~ fa.port }}
+{{ '  name: \"' + uf['name'] + '\"' }}
+{% if uf['forward_address'] is defined and uf['forward_address'] != '' %}
+{% for ufa in uf['forward_address'] %}
+{% if ufa['address'] | ansible.utils.ipaddr('host') %}
+{% if ufa['port'] is defined and ufa['port'] != '' %}
+{{ '  forward-addr: ' + ufa['address'] + '@' ~ ufa['port'] }}
 {% else %}
-{{ '  ' + 'forward-addr: ' + fa.address }}
+{{ '  forward-addr: ' + ufa['address'] }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if f.forward_host is defined and f.forward_host != '' %}
-{% for fh in f.forward_host %}
-{% if fh.port is defined and fh.port != '' %}
-{{ '  ' ~ 'forward-host: ' ~ fh.host ~ '@' ~ fh.port }}
+{% if uf['forward_host'] is defined and uf['forward_host'] != '' %}
+{% for ufh in uf['forward_host'] %}
+{% if ufh['port'] is defined and ufh['port'] != '' %}
+{{ '  forward-host: ' + ufh['host'] + '@' ~ ufh['port'] }}
 {% else %}
-{{ '  ' + 'forward-host: ' + fh.host }}
+{{ '  forward-host: ' + ufh['host'] }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if f.forward_first is defined and f.forward_first in ['yes', 'no'] %}
-{{ '  ' + 'forward-first: ' + f.forward_first }}
+{% if uf['forward_first'] is defined and uf['forward_first'] in ['yes', 'no'] %}
+{{ '  forward-first: ' + uf['forward_first'] }}
 {% endif %}
-{% if f.forward_ssl_upstream is defined and
-      f.forward_ssl_upstream in ['yes', 'no'] %}
-{{ '  ' + 'forward-ssl-upstream: ' + f.forward_ssl_upstream }}
+{% if uf['forward_ssl_upstream'] is defined and uf['forward_ssl_upstream'] in
+  ['yes', 'no'] %}
+{{ '  forward-ssl-upstream: ' + uf['forward_ssl_upstream'] }}
 {% endif %}
