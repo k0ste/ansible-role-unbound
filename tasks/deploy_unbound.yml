@@ -1,15 +1,21 @@
 ---
 - name: "unbound | Unbound control setup"
   ansible.builtin.command:
-    cmd: "{{ 'unbound-control-setup -d ' + \
-      vars['unbound_control_setup_dest'] }}"
+    cmd: "{{ 'unbound-control-setup -d ' + vars['unbound_control_setup_dst'] }}"
   register: "unbound_control_setup_result"
   changed_when: "unbound_control_setup_result['rc'] == 0"
   when:
-    - "vars['unbound_control_setup'] is defined"
-    - "(vars['unbound_control_setup'] == 'always' or
-      (vars['unbound_control_setup'] == 'true' and
-       vars['find_result']['files'] | length == 0))"
+    - "hostvars[inventory_hostname]['unbound'] is defined"
+    - "hostvars[inventory_hostname]['unbound'] != ''"
+    - "hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query(vars['unbound_control_setup']) is defined"
+    - "((hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query(vars['unbound_control_setup']) ==
+      'always') or (hostvars[inventory_hostname]['unbound'] |
+      community.general.json_query(vars['unbound_control_setup']) == 'true' and
+      vars['unbound_control_find_result']['files'] == []))"
+  vars:
+    unbound_control_setup: "[] | map(&control_setup || 'false', @) | [0]"
 - name: "unbound | Deploy unbound configuration"
   ansible.builtin.template:
     src: "unbound.j2"

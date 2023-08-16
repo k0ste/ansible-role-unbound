@@ -15,8 +15,6 @@
       community.general.json_query('[].root_hints_dst | [0]') }}"
     unbound_download_root_hints: "{{ hostvars[inventory_hostname]['unbound'] |
       community.general.json_query('[].download_root_hints | [0]') }}"
-    unbound_control_setup: "{{ hostvars[inventory_hostname]['unbound'] |
-      community.general.json_query('[].control_setup | [0]') }}"
     unbound_control_setup_dst: "{{ hostvars[inventory_hostname]['unbound'] |
       community.general.json_query('[].control_setup_dst | [0]') }}"
     unbound_settings: "{{ hostvars[inventory_hostname]['unbound'] |
@@ -80,18 +78,23 @@
 - name: "unbound | Find unbound-control certificates"
   ansible.builtin.find:
     paths: "{{ vars['unbound_control_setup_dst'] }}"
-    patterns: "(.*).pem"
+    patterns: "unbound_control.pem"
     recurse: "no"
     file_type: "file"
-    use_regex: "true"
   register: "unbound_control_find_result"
   when:
-    - "vars['unbound_control_setup'] is defined"
-    - "vars['unbound_control_setup'] == 'true'"
+    - "hostvars[inventory_hostname]['unbound'] is defined"
+    - "hostvars[inventory_hostname]['unbound'] != ''"
+    - "hostvars[inventory_hostname]['unbound'] |
+       community.general.json_query(vars['unbound_control_setup']) is defined"
+    - "hostvars[inventory_hostname]['unbound'] |
+       community.general.json_query(vars['unbound_control_setup']) == 'true'"
+  vars:
+    unbound_control_setup: "[] | map(&control_setup || 'false', @) | [0]"
 - name: "unbound | Stat root hints"
   ansible.builtin.stat:
-    path: "{{ vars['unbound_root_hints_dest'] }}"
+    path: "{{ vars['unbound_root_hints_dst'] }}"
   register: "unbound_root_hints_stat"
   when:
-    - "vars['unbound_root_hints_dest'] is defined"
-    - "vars['unbound_root_hints_dest'] != ''"
+    - "vars['unbound_root_hints_dst'] is defined"
+    - "vars['unbound_root_hints_dst'] != ''"
