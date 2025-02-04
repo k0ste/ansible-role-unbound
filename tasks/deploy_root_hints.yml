@@ -9,7 +9,7 @@
   notify:
     - "Reload unbound daemon"
   when:
-    - "vars['unbound_download_root_hints'] == true"
+    - "vars['unbound_download_root_hints']"
     - "not vars['unbound_root_hints_stat']['stat']['exists']"
 - name: "unbound | Download root hints [always]"
   ansible.builtin.get_url:

@@ -2,7 +2,6 @@
 - name: "unbound | Add the OS specific varibles"
   ansible.builtin.include_vars:
     file: "{{ hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
-
 - name: "unbound | Set facts about unbound role"
   ansible.builtin.set_fact:
     unbound_restart_method: "{{ hostvars[inventory_hostname]['unbound'] |
@@ -23,7 +22,7 @@
   ansible.builtin.assert:
     that:
       - "vars['unbound_package_state'] in ['present', 'latest']"
-    msg: "'package_state' must be in 'present' or 'latest'"
+    fail_msg: "'package_state' must be in 'present' or 'latest'"
     quiet: "true"
   when:
     - "vars['unbound_package_state'] is defined"
@@ -32,7 +31,7 @@
   ansible.builtin.assert:
     that:
       - "vars['unbound_restart_method'] in ['reload', 'restart']"
-    msg: "Unbound restart method must be in 'reload' or 'restart'"
+    fail_msg: "Unbound restart method must be in 'reload' or 'restart'"
     quiet: "true"
   when:
     - "vars['unbound_restart_method'] is defined"
@@ -51,7 +50,7 @@
   ansible.builtin.assert:
     that:
       - "vars['unbound_download_root_hints'] in [true, false, 'always']"
-    msg: "'download_root_hints' must be in 'true', 'false' or 'always'"
+    fail_msg: "'download_root_hints' must be in 'true', 'false' or 'always'"
     quiet: "true"
   when:
     - "vars['unbound_download_root_hints'] is defined"
@@ -71,7 +70,7 @@
   ansible.builtin.assert:
     that:
       - "vars['unbound_root_hints_src'] is ansible.builtin.url()"
-    msg: "url not found in 'root_hints_src'."
+    fail_msg: "url not found in 'root_hints_src'"
     quiet: "true"
   when:
     - "vars['unbound_download_root_hints'] in [true, 'always']"
