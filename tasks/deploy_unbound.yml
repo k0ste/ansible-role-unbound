@@ -4,6 +4,7 @@
     cmd: "{{ 'unbound-control-setup -d ' + vars['unbound_control_setup_dst'] }}"
   register: "unbound_control_setup_result"
   changed_when: "unbound_control_setup_result['rc'] == 0"
+  failed_when: "unbound_control_setup_result['rc'] != 0"
   when:
     - "hostvars[inventory_hostname]['unbound'] is defined"
     - "hostvars[inventory_hostname]['unbound'] != ''"
@@ -29,6 +30,8 @@
   when:
     - "vars['unbound_settings'] is defined"
     - "vars['unbound_settings'] != []"
+    - "vars['unbound_settings'] != ''"
+    - "vars['unbound_settings'] != None"
   notify:
     - "Reload unbound daemon"
 - name: "unbound | Enable unbound"
